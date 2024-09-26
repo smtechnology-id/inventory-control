@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Stock;
 use App\Models\Driver;
 use App\Models\Gudang;
+use App\Models\Report;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Konsumen;
@@ -219,7 +220,7 @@ class AdminController extends Controller
         $gudang->name = $request->name;
         $gudang->save();
         return redirect()->route('admin.gudang')->with('success', 'Gudang updated successfully');
-        }
+    }
 
     public function deleteGudang($slug)
     {
@@ -276,14 +277,15 @@ class AdminController extends Controller
         $driver->delete();
         return redirect()->route('admin.driver')->with('success', 'Driver deleted successfully');
     }
-    
+
 
     // Stock
     public function stock()
     {
-        $stocks = Stock::all();
+        $products = Product::all();
         $gudangs = Gudang::all();
-        return view('admin.stock', compact('stocks', 'gudangs'));
+        $stocks = Stock::all();
+        return view('admin.stock', compact('products', 'gudangs', 'stocks'));
     }
 
 
@@ -326,7 +328,7 @@ class AdminController extends Controller
         return redirect()->route('admin.supplier')->with('success', 'Supplier updated successfully');
     }
 
-    public function deleteSupplier($id) 
+    public function deleteSupplier($id)
     {
         $supplier = Supplier::find($id);
         $supplier->delete();
@@ -407,9 +409,9 @@ class AdminController extends Controller
         $account->password = Hash::make($request->password);
         $account->save();
 
-        if($account->level == 'supervisor') {
+        if ($account->level == 'supervisor') {
             return redirect()->route('admin.account.supervisor')->with('success', 'Account supervisor added successfully');
-        } else if($account->level == 'staff') {
+        } else if ($account->level == 'staff') {
             return redirect()->route('admin.account.staff')->with('success', 'Account staff added successfully');
         }
     }
@@ -450,9 +452,9 @@ class AdminController extends Controller
             $account->password = Hash::make($request->password);
         }
         $account->save();
-        if($account->level == 'supervisor') {
+        if ($account->level == 'supervisor') {
             return redirect()->route('admin.account.supervisor')->with('success', 'Account supervisor updated successfully');
-        } else if($account->level == 'staff') {
+        } else if ($account->level == 'staff') {
             return redirect()->route('admin.account.staff')->with('success', 'Account staff updated successfully');
         }
     }
@@ -472,8 +474,46 @@ class AdminController extends Controller
         $suppliers = Supplier::all();
         $konsumens = Konsumen::all();
         $gudangs = Gudang::all();
-        return view('admin.add-report-masuk', compact('stocks', 'drivers', 'suppliers', 'konsumens', 'gudangs'));
+        $products = Product::all();
+        $gudangs = Gudang::all();
+        return view('admin.add-report-masuk', compact('stocks', 'drivers', 'suppliers', 'konsumens', 'gudangs', 'products'));
     }
+    public function storeReportMasuk(Request $request)
+    {
+        $request->validate([
+            'product_id' => 'required',
+            'quantity' => 'required',
+            'gudang_id' => 'required',
+            'supplier_id' => 'required',
+            'nomor_po' => 'nullable',
+            'keterangan' => 'nullable',
+        ]);
+        //    check Berdasarkan product_id ada tidak
+        $stock = Stock::where('product_id', $request->product_id)
+            ->where('gudang_id', $request->gudang_id)
+            ->first();
+        if ($stock) {
+            $stock->stock += $request->quantity;
+            $stock->save();
+        } else {
+            $stock = new Stock();
+            $stock->product_id = $request->product_id;
+            $stock->gudang_id = $request->gudang_id;
+            $stock->stock = $request->quantity;
+            $stock->save();
+        }
+        $report = new Report();
+        $report->stock_id = $stock->id;
+        $report->supplier_id = $request->supplier_id;
+        $report->gudang_id = $request->gudang_id;
+        $report->nomor_po = $request->nomor_po;
+        $report->keterangan = $request->keterangan;
+        $report->quantity = $request->quantity;
+        $report->jenis = 'masuk';
+        $report->save();
+        return redirect()->back()->with('success', 'Report added successfully');
+    }
+
 
     public function addReportKeluar()
     {
@@ -481,7 +521,39 @@ class AdminController extends Controller
         $drivers = Driver::all();
         $konsumens = Konsumen::all();
         $gudangs = Gudang::all();
-        return view('admin.add-report-keluar', compact('stocks', 'drivers', 'konsumens', 'gudangs'));
+        $products = Product::all();
+        return view('admin.add-report-keluar', compact('stocks', 'drivers', 'konsumens', 'gudangs', 'products'));
+    }
+
+    public function storeReportKeluar(Request $request)
+    {
+        $request->validate([
+            'product_id' => 'required',
+            'quantity' => 'required',
+            'gudang_id' => 'required',
+            'konsumen_id' => 'required',
+            'nomor_do' => 'nullable',
+            'keterangan' => 'nullable',
+        ]);
+        $stock = Stock::where('product_id', $request->product_id)
+            ->where('gudang_id', $request->gudang_id)
+            ->first();
+        if ($stock) {
+            $stock->stock -= $request->quantity;
+            $stock->save();
+        } else {
+            return redirect()->back()->with('error', 'Stock tidak ada');
+        }
+        $report = new Report();
+        $report->stock_id = $stock->id;
+        $report->konsumen_id = $request->konsumen_id;
+        $report->gudang_id = $request->gudang_id;
+        $report->nomor_do = $request->nomor_do;
+        $report->driver_id = $request->driver_id;
+        $report->keterangan = $request->keterangan;
+        $report->quantity = $request->quantity;
+        $report->jenis = 'keluar';
+        $report->save();
+        return redirect()->back()->with('success', 'Report added successfully');
     }
 }
-

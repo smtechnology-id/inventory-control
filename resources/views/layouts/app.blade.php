@@ -91,8 +91,8 @@
                             <a href="{{ route('admin.stock') }}"><i
                                     class="material-icons-two-tone">inventory</i>Stock</a>
                         </li>
-                        <li class="@yield('active_report')">
-                            <a href=""><i class="material-icons-two-tone">summarize</i>Report<i
+                        <li class="@yield('active_addReport')">
+                            <a href=""><i class="material-icons-two-tone">summarize</i>Add Report<i
                                     class="material-icons has-sub-menu">keyboard_arrow_right</i></a>
                             <ul class="sub-menu">
                                 <li>
@@ -101,6 +101,12 @@
                                 <li>
                                     <a href="{{ route('admin.add.report.keluar') }}">Barang Keluar</a>
                                 </li>
+                            </ul>
+                        </li>
+                        <li class="@yield('active_report')">
+                            <a href=""><i class="material-icons-two-tone">summarize</i>Report<i
+                                    class="material-icons has-sub-menu">keyboard_arrow_right</i></a>
+                            <ul class="sub-menu">
                                 <li>
                                     <a href="{{ route('admin.report.masuk') }}">History Barang Masuk</a>
                                 </li>

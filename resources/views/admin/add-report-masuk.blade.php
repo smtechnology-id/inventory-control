@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('active_report', 'active-page')
+@section('active_addReport', 'active-page')
 @section('content')
     <div class="row">
         <div class="col">
@@ -23,27 +23,26 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label for="stock_id" class="mb-2">Stock <span class="text-danger">*</span></label>
-                                    <select name="stock_id" id="stock_id" class="form-control select2" required>
-                                        <option value="">Pilih Stock</option>
-                                        @foreach ($stocks as $stock)
-                                            <option value="{{ $stock->id }}">{{ $stock->name }} -
-                                                {{ $stock->nomor_polisi_kendaraan }} - {{ $stock->nomor_hp_driver }}
+                                    <label for="product_id" class="mb-2">Product <span class="text-danger">*</span></label>
+                                    <select name="product_id" id="product_id" class="form-control select2" required>
+                                        <option value="">Pilih Product</option>
+                                        @foreach ($products as $product)
+                                            <option value="{{ $product->id }}">{{ $product->nama_barang }} -
+                                                {{ $product->kode_barang }}
                                             </option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="form-group mb-3">
-                                    <label for="driver_id" class="mb-2">Driver <span class="text-danger">*</span></label>
-                                    <select name="driver_id" id="driver_id" class="form-control js-example-basic-single" required>
-                                        <option value="">Pilih Driver</option>
-                                        @foreach ($drivers as $driver)
-                                            <option value="{{ $driver->id }}">{{ $driver->nama_driver }} -
-                                                {{ $driver->nomor_polisi_kendaraan }} - {{ $driver->nomor_hp_driver }}
-                                            </option>
+                                    <label for="gudang_id" class="mb-2">Gudang <span class="text-danger">*</span></label>
+                                    <select name="gudang_id" id="gudang_id" class="form-control select2" required>
+                                        <option value="">Pilih Gudang</option>
+                                        @foreach ($gudangs as $gudang)
+                                            <option value="{{ $gudang->id }}">{{ $gudang->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
+                               
                                 <div class="form-group mb-3">
                                     <label for="supplier_id" class="mb-2">Supplier <span
                                             class="text-danger">*</span></label>
@@ -89,7 +88,13 @@
         });
 
         $(document).ready(function() {
-            $('#stock_id').select2({
+            $('#product_id').select2({
+
+            });
+        });
+
+        $(document).ready(function() {
+            $('#gudang_id').select2({
 
             });
         });

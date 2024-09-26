@@ -24,17 +24,36 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Nama Gudang</th>
+                                    <th>Nomor Material</th>
+                                    <th>Kode Barang</th>
+                                    <th>Nama Barang</th>
+                                    <th>Satuan</th>
+                                    <th>Kategori</th>
+                                    <th>Stock Awal</th>
+                                    <th>Stock Minimal</th>
+                                    <th>Keterangan</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($gudangs as $gudang)
+                                @foreach ($products as $product)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $gudang->name }}</td>
+                                        <td>{{ $product->nomor_material }}</td>
+                                        <td>{{ $product->kode_barang }}</td>
+                                        <td>{{ $product->nama_barang }}</td>
+                                        <td>{{ $product->unit->name }}</td>
+                                        <td>{{ $product->category->name }}</td>
+                                        <td>{{ $product->stock_awal }}</td>
+                                        <td>{{ $product->stock_minimal }}</td>
+                                        <td>{{ $product->keterangan }}</td>
                                         <td>
-                                            <a href="{{ route('admin.stock.gudang', $gudang->slug) }}" class="btn btn-primary">Lihat Stock Gudang</a>
+                                            @foreach ($gudangs as $gudang)
+                                                @php
+                                                    $stockItem = $stocks->where('product_id', $product->id)->where('gudang_id', $gudang->id)->first();
+                                                @endphp 
+                                                {{ $gudang->name }} - {{ $stockItem ? $stockItem->stock : 0 }}<br> <!-- Menambahkan <br> untuk pemisah antar gudang -->
+                                            @endforeach
                                         </td>
                                     </tr>
                                 @endforeach
