@@ -14,13 +14,34 @@ use App\Models\Konsumen;
 use App\Models\Supplier;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\TransferStock;
 use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
     public function index()
     {
-        return view('admin.dashboard');
+        $totalBarang = Product::count();
+        $gudang = Gudang::count();
+        $supplier = Supplier::count();
+        $konsumen = Konsumen::count();
+        $driver = Driver::count();
+        $user = User::count();
+
+        // Stock Kritis
+        $stock = Stock::all();
+        $stockKritis = []; // Inisialisasi array untuk menyimpan stok kritis
+        foreach ($stock as $s) {
+            $product_id = $s->product_id;
+            $product = Product::find($product_id);
+            $stockMinimal = $product->stock_minimal;
+
+            $stockKritisFlag = $s->stock < $stockMinimal; // Menggunakan nama variabel yang lebih jelas
+            if ($stockKritisFlag) {
+                $stockKritis[] = $s; // Menambahkan stok ke array jika kritis
+            }
+        }
+        return view('admin.dashboard', compact('totalBarang', 'gudang', 'supplier', 'konsumen', 'driver', 'user', 'stockKritis'));
     }
 
     // Product
@@ -539,6 +560,9 @@ class AdminController extends Controller
             ->where('gudang_id', $request->gudang_id)
             ->first();
         if ($stock) {
+            if ($stock->stock < $request->quantity) {
+                return redirect()->back()->with('error', 'Stock tidak cukup');
+            }
             $stock->stock -= $request->quantity;
             $stock->save();
         } else {
@@ -555,5 +579,81 @@ class AdminController extends Controller
         $report->jenis = 'keluar';
         $report->save();
         return redirect()->back()->with('success', 'Report added successfully');
+    }
+
+    // History Report
+    public function reportMasuk()
+    {
+        $reports = Report::where('jenis', 'masuk')->latest()->get();
+        return view('admin.report-history-masuk', compact('reports'));
+    }
+
+    public function reportKeluar()
+    {
+        $reports = Report::where('jenis', 'keluar')->latest()->get();
+        return view('admin.report-history-keluar', compact('reports'));
+    }
+
+
+    // Transfer Stock
+    public function transferStock()
+    {
+        $transfers = TransferStock::all();
+        $stocks = Stock::all();
+        return view('admin.transfer-stock', compact('transfers', 'stocks'));
+    }
+    public function addTransferStock()
+    {
+        $products = Product::all();
+        $gudangs = Gudang::all();
+        return view('admin.add-transfer-stock', compact('products', 'gudangs'));
+    }
+    public function storeTransferStock(Request $request)
+    {
+        $request->validate([
+            'product_id' => 'required',
+            'gudang_tujuan' => 'required',
+            'gudang_awal' => 'required',
+            'quantity' => 'required',
+            'keterangan' => 'nullable',
+        ]);
+
+        $stockAwal = Stock::where('product_id', $request->product_id)
+            ->where('gudang_id', $request->gudang_awal)
+            ->first();
+        if (!$stockAwal) {
+            return redirect()->back()->with('error', 'Stock product tidak ada');
+        }
+        if ($stockAwal->stock < $request->quantity) {
+            return redirect()->back()->with('error', 'Stock product tidak cukup');
+        }
+
+        $stockTujuan = Stock::where('product_id', $request->product_id)
+            ->where('gudang_id', $request->gudang_tujuan)
+            ->first();
+
+        if (!$stockTujuan) {
+            $stockTujuan = new Stock();
+            $stockTujuan->product_id = $request->product_id;
+            $stockTujuan->gudang_id = $request->gudang_tujuan;
+            $stockTujuan->stock = $request->quantity;
+            $stockTujuan->save();
+        } else {
+            $stockTujuan->stock += $request->quantity;
+            $stockTujuan->save();
+        }
+
+        $stockAwal->stock -= $request->quantity;
+        $stockAwal->save();
+
+        $transfer = new TransferStock();
+        $transfer->product_id = $request->product_id;
+        $transfer->gudang_tujuan = $request->gudang_tujuan;
+        $transfer->gudang_awal = $request->gudang_awal;
+        $transfer->quantity = $request->quantity;
+        $transfer->keterangan = $request->keterangan;
+        $transfer->save();
+
+        return redirect()->back()->with('success', 'Transfer stock added successfully');
     }
 }

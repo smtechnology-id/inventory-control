@@ -14,4 +14,9 @@ class Konsumen extends Model
         'alamat',
         'nomor_telepon',
     ];
+
+    public function report()
+    {
+        return $this->hasMany(Report::class, 'konsumen_id');
+    }
 }

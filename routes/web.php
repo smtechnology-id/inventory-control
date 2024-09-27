@@ -20,7 +20,7 @@ use App\Http\Controllers\SupervisorController;
 
 // Login
 Route::get('/', [AuthController::class, 'index'])->name('login');
-Route::post('/login', [AuthController::class, 'loginPost'])->name('loginPost');
+Route::post('/loginPost', [AuthController::class, 'loginPost'])->name('loginPost');
 
 // Register
 Route::get('/register', [AuthController::class, 'register'])->name('register');
@@ -104,6 +104,13 @@ Route::group(['middleware' => ['authCheck:admin']], function () {
 
     Route::post('/admin/report/masuk/store', [AdminController::class, 'storeReportMasuk'])->name('admin.report.masuk.store');
     Route::post('/admin/report/keluar/store', [AdminController::class, 'storeReportKeluar'])->name('admin.report.keluar.store');
+
+    // Transfer Stock
+    Route::get('/admin/transfer-stock', [AdminController::class, 'transferStock'])->name('admin.transfer.stock');
+    Route::get('/admin/transfer-stock/create', [AdminController::class, 'addTransferStock'])->name('admin.transfer.stock.create');
+    Route::post('/admin/transfer-stock/store', [AdminController::class, 'storeTransferStock'])->name('admin.transfer.stock.store');
+    Route::post('/admin/transfer-stock/update', [AdminController::class, 'updateTransferStock'])->name('admin.transfer.stock.update');
+    Route::get('/admin/transfer-stock/delete/{id}', [AdminController::class, 'deleteTransferStock'])->name('admin.transfer.stock.delete');
 });
 
 

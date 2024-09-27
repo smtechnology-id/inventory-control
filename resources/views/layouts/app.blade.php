@@ -35,14 +35,14 @@
     <!-- Select2 -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
-    
+
 </head>
 
 <body>
     <div class="app align-content-stretch d-flex flex-wrap">
         <div class="app-sidebar">
             <div class="logo">
-                <a href="index.html" class="logo-icon"><span class="logo-text">Inventory Control</span></a>
+                <a href="#" class="logo-icon"><span class="logo-text">Inventory Control</span></a>
                 <div class="sidebar-user-switcher user-activity-online">
                     <a href="#">
                         <img src="{{ asset('assets/images/avatars/avatar.png') }}">
@@ -101,6 +101,9 @@
                                 <li>
                                     <a href="{{ route('admin.add.report.keluar') }}">Barang Keluar</a>
                                 </li>
+                                <li>
+                                    <a href="{{ route('admin.transfer.stock.create') }}">Transfer Stock</a>
+                                </li>
                             </ul>
                         </li>
                         <li class="@yield('active_report')">
@@ -113,11 +116,14 @@
                                 <li>
                                     <a href="{{ route('admin.report.keluar') }}">History Barang Keluar</a>
                                 </li>
+                                <li>
+                                    <a href="{{ route('admin.transfer.stock') }}">Transfer Stock</a>
+                                </li>
                             </ul>
                         </li>
-                        
+
                         <li class="sidebar-title">
-                           Additional Data
+                            Additional Data
                         </li>
                         <li class="@yield('active_gudang')">
                             <a href="{{ route('admin.gudang') }}"><i
@@ -138,7 +144,7 @@
                         <li class="sidebar-title">
                             Account
                         </li>
-                        
+
                         <li class="@yield('active_account')">
                             <a href=""><i class="material-icons-two-tone">person_add</i>Account<i
                                     class="material-icons has-sub-menu">keyboard_arrow_right</i></a>
@@ -182,6 +188,103 @@
                         <div class="d-flex">
                             <ul class="navbar-nav">
                                 <li class="nav-item hidden-on-mobile">
+                                    <a class="nav-link nav-notifications-toggle" id="notificationsDropDown"
+                                        href="#" data-bs-toggle="dropdown"><i class="material-icons-two-tone">notifications</i>
+                                        <span class="badge rounded-pill badge-danger float-end">87</span></a>
+                                    <div class="dropdown-menu dropdown-menu-end notifications-dropdown"
+                                        aria-labelledby="notificationsDropDown">
+                                        <h6 class="dropdown-header">Notifications</h6>
+                                        <div class="notifications-dropdown-list">
+                                            <a href="#">
+                                                <div class="notifications-dropdown-item">
+                                                    <div class="notifications-dropdown-item-image">
+                                                        <span class="notifications-badge bg-info text-white">
+                                                            <i class="material-icons-outlined">campaign</i>
+                                                        </span>
+                                                    </div>
+                                                    <div class="notifications-dropdown-item-text">
+                                                        <p class="bold-notifications-text">Donec
+                                                            tempus nisi sed
+                                                            erat vestibulum,
+                                                            eu suscipit ex
+                                                            laoreet</p>
+                                                        <small>19:00</small>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <a href="#">
+                                                <div class="notifications-dropdown-item">
+                                                    <div class="notifications-dropdown-item-image">
+                                                        <span class="notifications-badge bg-danger text-white">
+                                                            <i class="material-icons-outlined">bolt</i>
+                                                        </span>
+                                                    </div>
+                                                    <div class="notifications-dropdown-item-text">
+                                                        <p class="bold-notifications-text">Quisque
+                                                            ligula dui,
+                                                            tincidunt nec
+                                                            pharetra eu,
+                                                            fringilla quis
+                                                            mauris</p>
+                                                        <small>18:00</small>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <a href="#">
+                                                <div class="notifications-dropdown-item">
+                                                    <div class="notifications-dropdown-item-image">
+                                                        <span class="notifications-badge bg-success text-white">
+                                                            <i class="material-icons-outlined">alternate_email</i>
+                                                        </span>
+                                                    </div>
+                                                    <div class="notifications-dropdown-item-text">
+                                                        <p>Nulla id libero
+                                                            mattis justo
+                                                            euismod congue
+                                                            in et metus</p>
+                                                        <small>yesterday</small>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <a href="#">
+                                                <div class="notifications-dropdown-item">
+                                                    <div class="notifications-dropdown-item-image">
+                                                        <span class="notifications-badge">
+                                                            <img src="../../assets/images/avatars/avatar.png" alt>
+                                                        </span>
+                                                    </div>
+                                                    <div class="notifications-dropdown-item-text">
+                                                        <p>Praesent sodales
+                                                            lobortis velit
+                                                            ac
+                                                            pellentesque</p>
+                                                        <small>yesterday</small>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <a href="#">
+                                                <div class="notifications-dropdown-item">
+                                                    <div class="notifications-dropdown-item-image">
+                                                        <span class="notifications-badge">
+                                                            <img src="../../assets/images/avatars/avatar.png" alt>
+                                                        </span>
+                                                    </div>
+                                                    <div class="notifications-dropdown-item-text">
+                                                        <p>Praesent lacinia
+                                                            ante eget
+                                                            tristique
+                                                            mattis. Nam
+                                                            sollicitudin
+                                                            velit sit amet
+                                                            auctor porta</p>
+                                                        <small>yesterday</small>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="nav-item hidden-on-mobile">
                                     <a class="nav-link" href="{{ route('logout') }}">Logout</a>
                                 </li>
                             </ul>
@@ -195,7 +298,8 @@
                     <div class="container">
                         @if (session('success'))
                             <div class="alert alert-custom" role="alert">
-                                <div class="custom-alert-icon icon-primary"><i class="material-icons-outlined">done</i>
+                                <div class="custom-alert-icon icon-primary"><i
+                                        class="material-icons-outlined">done</i>
                                 </div>
                                 <div class="alert-content">
                                     <span class="alert-title">{{ session('success') }}</span>
@@ -204,7 +308,8 @@
                         @endif
                         @if (session('error'))
                             <div class="alert alert-custom" role="alert">
-                                <div class="custom-alert-icon icon-warning"><i class="material-icons-outlined">error</i>
+                                <div class="custom-alert-icon icon-warning"><i
+                                        class="material-icons-outlined">error</i>
                                 </div>
                                 <div class="alert-content">
                                     <span class="alert-title">{{ session('error') }}</span>
@@ -229,7 +334,7 @@
             </div>
         </div>
     </div>
-    
+
 
 
     <!-- Javascripts -->
