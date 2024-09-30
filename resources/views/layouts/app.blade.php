@@ -104,6 +104,9 @@
                                 <li>
                                     <a href="{{ route('admin.transfer.stock.create') }}">Transfer Stock</a>
                                 </li>
+                                <li>
+                                    <a href="{{ route('admin.stock.opname.create') }}">Stock Opname</a>
+                                </li>
                             </ul>
                         </li>
                         <li class="@yield('active_report')">
@@ -117,7 +120,10 @@
                                     <a href="{{ route('admin.report.keluar') }}">History Barang Keluar</a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('admin.transfer.stock') }}">Transfer Stock</a>
+                                    <a href="{{ route('admin.transfer.stock') }}">History Transfer Stock</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.stock.opname') }}">History Opname</a>
                                 </li>
                             </ul>
                         </li>

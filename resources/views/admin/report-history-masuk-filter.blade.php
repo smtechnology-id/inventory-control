@@ -20,25 +20,8 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-12">
-                        {{-- Filtering By Created At --}}
-                        <form action="{{ route('admin.report.history.masuk.filter') }}" method="get">
-                            @csrf
-                            <div class="row">
-                                <div class="col-6">
-                                    <label for="created_at">From</label>
-                                    <input type="date" name="from" class="form-control"
-                                        value="{{ request('created_at') }}">
-                                </div>
-                                <div class="col-6">
-                                    <label for="created_at">To</label>
-                                    <input type="date" name="to" class="form-control"
-                                        value="{{ request('created_at') }}">
-                                </div>
-                                <div class="col-6">
-                                    <button type="button" class="btn btn-primary" onclick="openFilter()">Filter</button>
-                                </div>
-                            </div>
-                        </form>
+                        {{-- Cetak Excel --}}
+                        <a href="{{ route('admin.report.masuk.download.excel', ['from' => $from, 'to' => $to]) }}" class="btn btn-sm btn-success">Cetak Excel</a>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-bordered" id="datatable1" class="display" style="width:100%">

@@ -2,20 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Unit;
-use App\Models\User;
-use App\Models\Stock;
+use App\Exports\ExportReportKeluar;
+use App\Exports\ExportReportMasuk;
+use App\Models\Category;
 use App\Models\Driver;
 use App\Models\Gudang;
-use App\Models\Report;
-use App\Models\Product;
-use App\Models\Category;
 use App\Models\Konsumen;
+use App\Models\Product;
+use App\Models\Report;
+use App\Models\Stock;
+use App\Models\StockOpname;
 use App\Models\Supplier;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Models\TransferStock;
+use App\Models\Unit;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AdminController extends Controller
 {
@@ -655,5 +659,89 @@ class AdminController extends Controller
         $transfer->save();
 
         return redirect()->back()->with('success', 'Transfer stock added successfully');
+    }
+
+
+    // Stock Opname
+    public function stockOpname()
+    {
+        $stockOpnames = StockOpname::latest()->get();
+        $stocks = Stock::all();
+        return view('admin.stock-opname', compact('stockOpnames', 'stocks'));
+    }
+
+    public function addStockOpname()
+    {
+        $products = Product::all();
+        $gudangs = Gudang::all();
+        return view('admin.add-stock-opname', compact('products', 'gudangs'));
+    }
+
+
+    public function storeStockOpname(Request $request)
+    {
+        $request->validate([
+            'product_id' => 'required',
+            'gudang_id' => 'required',
+            'stock_actual' => 'required',
+            'keterangan' => 'nullable',
+        ]);
+
+        // Cek Stock 
+        $stock = Stock::where('product_id', $request->product_id)
+            ->where('gudang_id', $request->gudang_id)
+            ->first();
+        if (!$stock) {
+            $newStock = new Stock();
+            $newStock->product_id = $request->product_id;
+            $newStock->gudang_id = $request->gudang_id;
+            $newStock->stock = $request->stock_actual;
+            $newStock->save();
+            if ($newStock) {
+                $stockOpname = new StockOpname();
+                $stockOpname->stock_id = $newStock->id;
+                $stockOpname->stock_tercatat = 0;
+                $stockOpname->jumlah_aktual = $request->stock_actual;
+                $stockOpname->keterangan = $request->keterangan;
+                $stockOpname->save();
+                return redirect()->back()->with('success', 'Stock opname added successfully');
+            }
+        } else {
+            // JIka Stock Ada Update stock nya
+            $stockLama = $stock->stock;
+            $stock->stock = $request->stock_actual;
+            $stock->save();
+            $stockOpname = new StockOpname();
+            $stockOpname->stock_id = $stock->id;
+            $stockOpname->stock_tercatat = $stockLama;
+            $stockOpname->jumlah_aktual = $request->stock_actual;
+            $stockOpname->keterangan = $request->keterangan;
+            $stockOpname->save();
+            return redirect()->back()->with('success', 'Stock opname added successfully');
+        }
+    }
+
+
+    // filter History Report
+    public function reportHistoryMasukFilter(Request $request)
+    {
+        $reports = Report::where('jenis', 'masuk')
+            ->whereBetween('created_at', [$request->from, $request->to])
+            ->get();
+        $from = $request->from;
+        $to = $request->to;
+
+        return view('admin.report-history-masuk-filter', compact('reports', 'from', 'to'));
+    }
+
+    // Download Excel
+    public function downloadReportMasukExcel($from, $to)
+    {
+        return Excel::download(new ExportReportMasuk($from, $to), 'report-masuk.xlsx');
+    }
+
+    public function downloadReportKeluarExcel($from, $to)
+    {
+        return Excel::download(new ExportReportKeluar($from, $to), 'report-keluar.xlsx');
     }
 }

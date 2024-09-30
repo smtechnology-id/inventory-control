@@ -111,6 +111,21 @@ Route::group(['middleware' => ['authCheck:admin']], function () {
     Route::post('/admin/transfer-stock/store', [AdminController::class, 'storeTransferStock'])->name('admin.transfer.stock.store');
     Route::post('/admin/transfer-stock/update', [AdminController::class, 'updateTransferStock'])->name('admin.transfer.stock.update');
     Route::get('/admin/transfer-stock/delete/{id}', [AdminController::class, 'deleteTransferStock'])->name('admin.transfer.stock.delete');
+
+    // Stock Opname 
+    Route::get('/admin/stock-opname', [AdminController::class, 'stockOpname'])->name('admin.stock.opname');
+    Route::get('/admin/stock-opname/create', [AdminController::class, 'addStockOpname'])->name('admin.stock.opname.create');
+    Route::post('/admin/stock-opname/store', [AdminController::class, 'storeStockOpname'])->name('admin.stock.opname.store');
+    Route::post('/admin/stock-opname/update', [AdminController::class, 'updateStockOpname'])->name('admin.stock.opname.update');
+    Route::get('/admin/stock-opname/delete/{id}', [AdminController::class, 'deleteStockOpname'])->name('admin.stock.opname.delete');
+
+
+    // Filter Report History
+    Route::get('/admin/report/history/masuk/filter', [AdminController::class, 'reportHistoryMasukFilter'])->name('admin.report.history.masuk.filter');
+
+
+    // Download Excel 
+    Route::get('admin/report/masuk/download/excel/{from}/{to}', [AdminController::class, 'downloadReportMasukExcel'])->name('admin.report.masuk.download.excel');
 });
 
 
