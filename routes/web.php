@@ -112,6 +112,9 @@ Route::group(['middleware' => ['authCheck:admin']], function () {
     Route::post('/admin/transfer-stock/update', [AdminController::class, 'updateTransferStock'])->name('admin.transfer.stock.update');
     Route::get('/admin/transfer-stock/delete/{id}', [AdminController::class, 'deleteTransferStock'])->name('admin.transfer.stock.delete');
 
+    // Filter Transfer Stock
+    Route::get('/admin/transfer-stock/filter', [AdminController::class, 'transferStockFilter'])->name('admin.transfer.stock.filter');
+
     // Stock Opname 
     Route::get('/admin/stock-opname', [AdminController::class, 'stockOpname'])->name('admin.stock.opname');
     Route::get('/admin/stock-opname/create', [AdminController::class, 'addStockOpname'])->name('admin.stock.opname.create');
@@ -126,6 +129,15 @@ Route::group(['middleware' => ['authCheck:admin']], function () {
 
     // Download Excel 
     Route::get('admin/report/masuk/download/excel/{from}/{to}', [AdminController::class, 'downloadReportMasukExcel'])->name('admin.report.masuk.download.excel');
+
+    // Surat Jalan
+    Route::get('/admin/surat-jalan/{code}', [AdminController::class, 'addProductSuratJalan'])->name('admin.add.product.surat.jalan');
+    Route::post('/admin/surat-jalan/store', [AdminController::class, 'storeProductSuratJalan'])->name('admin.store.product.surat.jalan');
+    Route::get('/admin/surat-jalan/delete/{id}', [AdminController::class, 'deleteProductSuratJalan'])->name('admin.delete.product.surat.jalan');
+
+    // Cetak Surat Jalan
+    Route::get('/admin/cetak/surat-jalan/{code}', [AdminController::class, 'cetakSuratJalan'])->name('admin.cetak.surat.jalan');
+    Route::get('/admin/cetak/surat-jalan/excel/{code}', [AdminController::class, 'cetakSuratJalanExcel'])->name('admin.cetak.surat.jalan.excel');
 });
 
 

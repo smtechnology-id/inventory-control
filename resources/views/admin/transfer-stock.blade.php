@@ -10,7 +10,24 @@
             </div>
         </div>
     </div>
-
+    <form action="{{ route('admin.transfer.stock.filter') }}" method="get">
+        @csrf
+        <div class="row">
+            <div class="col-6">
+                <label for="created_at">From</label>
+                <input type="date" name="from" class="form-control"
+                    value="{{ request('created_at') }}">
+            </div>
+            <div class="col-6">
+                <label for="created_at">To</label>
+                <input type="date" name="to" class="form-control"
+                    value="{{ request('created_at') }}">
+            </div>
+            <div class="col-6">
+                <button type="button" class="btn btn-primary" onclick="openFilter()">Filter</button>
+            </div>
+        </div>
+    </form>
     <div class="row">
         <div class="col-12">
             <div class="card">

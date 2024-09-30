@@ -23,28 +23,6 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label for="product_id" class="mb-2">Product <span
-                                            class="text-danger">*</span></label>
-                                    <select name="product_id" id="product_id" class="form-control select2" required>
-                                        <option value="">Pilih Product</option>
-                                        @foreach ($products as $product)
-                                            <option value="{{ $product->id }}">{{ $product->nama_barang }} -
-                                                {{ $product->kode_barang }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label for="gudang_id" class="mb-2">Gudang <span class="text-danger">*</span></label>
-                                    <select name="gudang_id" id="gudang_id" class="form-control select2" required>
-                                        <option value="">Pilih Gudang</option>
-                                        @foreach ($gudangs as $gudang)
-                                            <option value="{{ $gudang->id }}">{{ $gudang->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-
-                                <div class="form-group mb-3">
                                     <label for="konsumen_id" class="mb-2">Konsumen <span
                                             class="text-danger">*</span></label>
                                     <select name="konsumen_id" id="konsumen_id" class="form-control select2" required>
@@ -66,24 +44,37 @@
                                         @endforeach
                                     </select>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
                                 <div class="form-group mb-3">
                                     <label for="nomor_do" class="mb-2">Nomor DO <span class="text-danger">*</span></label>
                                     <input type="text" name="nomor_do" id="nomor_do" class="form-control" required>
                                 </div>
                                 <div class="form-group mb-3">
-                                    <label for="quantity" class="mb-2">Quantity <span class="text-danger">*</span></label>
-                                    <input type="number" name="quantity" id="quantity" class="form-control" required>
+                                    <label for="via" class="mb-2">Via</label>
+                                    <input type="text" name="via" id="via" class="form-control" required>
+                                </div>
+                                
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="carrier" class="mb-2">Carrier</label>
+                                    <input type="text" name="carrier" id="carrier" class="form-control" required>
                                 </div>
                                 <div class="form-group mb-3">
-                                    <label for="keterangan" class="mb-2">Keterangan</label>
-                                    <textarea name="keterangan" id="keterangan" class="form-control" rows="3"></textarea>
+                                    <label for="reff" class="mb-2">Reff</label>
+                                    <input type="text" name="reff" id="reff" class="form-control" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="truck_number" class="mb-2">Truck Number</label>
+                                    <input type="text" name="truck_number" id="truck_number" class="form-control" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="delivered_by" class="mb-2">Delivered By</label>
+                                    <input type="text" name="delivered_by" id="delivered_by" class="form-control" required>
                                 </div>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
-                    </form> <!-- Penutup form ditambahkan di sini -->
+                    </form>
                 </div>
             </div>
         </div>

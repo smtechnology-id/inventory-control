@@ -2,23 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\ExportReportKeluar;
-use App\Exports\ExportReportMasuk;
-use App\Models\Category;
-use App\Models\Driver;
-use App\Models\Gudang;
-use App\Models\Konsumen;
-use App\Models\Product;
-use App\Models\Report;
-use App\Models\Stock;
-use App\Models\StockOpname;
-use App\Models\Supplier;
-use App\Models\TransferStock;
 use App\Models\Unit;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use App\Models\Stock;
+use App\Models\Driver;
+use App\Models\Gudang;
+use App\Models\Report;
+use App\Models\Product;
+use App\Models\Category;
+use App\Models\Konsumen;
+use App\Models\Supplier;
+use App\Models\SuratJalan;
+use App\Models\StockOpname;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Models\TransferStock;
+use App\Exports\ExportSuratJalan;
+use App\Models\SuratJalanProduct;
+use App\Exports\ExportReportMasuk;
+use App\Exports\ExportReportKeluar;
+use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 
 class AdminController extends Controller
@@ -553,37 +556,87 @@ class AdminController extends Controller
     public function storeReportKeluar(Request $request)
     {
         $request->validate([
-            'product_id' => 'required',
-            'quantity' => 'required',
-            'gudang_id' => 'required',
+            'driver_id' => 'required',
+            'nomor_do' => 'required',
             'konsumen_id' => 'required',
-            'nomor_do' => 'nullable',
+            'via' => 'required',
+            'carrier' => 'required',
+            'reff' => 'required',
+            'truck_number' => 'required',
+            'delivered_by' => 'required',
+        ]);
+        $suratJalan = new SuratJalan();
+        $suratJalan->driver_id = $request->driver_id;
+        $suratJalan->konsumen_id = $request->konsumen_id;
+        $suratJalan->nomor_do = $request->nomor_do;
+        $suratJalan->via = $request->via;
+        $suratJalan->carrier = $request->carrier;
+        $suratJalan->reff = $request->reff;
+        $suratJalan->truck_number = $request->truck_number;
+        $suratJalan->delivered_by = $request->delivered_by;
+        $code = 'SJ-' . date('YmdHis');
+        $suratJalan->kode = $code;
+        $suratJalan->save();
+        return redirect()->route('admin.add.product.surat.jalan', $suratJalan->kode)->with('success', 'Report keluar added successfully');
+    }
+
+    public function addProductSuratJalan($code)
+    {
+        $suratJalan = SuratJalan::where('kode', $code)->first();
+        $products = Product::all();
+        $gudangs = Gudang::all();
+        $productSuratJalans = SuratJalanProduct::where('surat_jalan_id', $suratJalan->id)->get();
+        return view('admin.add-product-surat-jalan', compact('suratJalan', 'productSuratJalans', 'products', 'gudangs'));
+    }
+
+    public function storeProductSuratJalan(Request $request)
+    {
+        $request->validate([
+            'product_id' => 'required',
+            'gudang_id' => 'required',
+            'qty' => 'required',
             'keterangan' => 'nullable',
         ]);
         $stock = Stock::where('product_id', $request->product_id)
             ->where('gudang_id', $request->gudang_id)
             ->first();
-        if ($stock) {
-            if ($stock->stock < $request->quantity) {
-                return redirect()->back()->with('error', 'Stock tidak cukup');
-            }
-            $stock->stock -= $request->quantity;
-            $stock->save();
+        if (!$stock) {
+            return redirect()->back()->with('error', 'Stock product tidak ada');
         } else {
-            return redirect()->back()->with('error', 'Stock tidak ada');
+            $suratJalanProduct = new SuratJalanProduct();
+            $suratJalanProduct->surat_jalan_id = $request->surat_jalan_id;
+            $suratJalanProduct->stock_id = $stock->id;
+            $suratJalanProduct->qty = $request->qty;
+            $suratJalanProduct->keterangan = $request->keterangan;
+            $suratJalanProduct->save();
         }
-        $report = new Report();
-        $report->stock_id = $stock->id;
-        $report->konsumen_id = $request->konsumen_id;
-        $report->gudang_id = $request->gudang_id;
-        $report->nomor_do = $request->nomor_do;
-        $report->driver_id = $request->driver_id;
-        $report->keterangan = $request->keterangan;
-        $report->quantity = $request->quantity;
-        $report->jenis = 'keluar';
-        $report->save();
-        return redirect()->back()->with('success', 'Report added successfully');
+
+        return redirect()->back()->with('success', 'Product surat jalan added successfully');
     }
+
+    public function deleteProductSuratJalan($id)
+    {
+        $suratJalanProduct = SuratJalanProduct::find($id);
+        // Tambahkan stock sesuai dengan qty yang dihapus
+        $stock = Stock::find($suratJalanProduct->stock_id);
+        $stock->stock += $suratJalanProduct->qty;
+        $stock->save();
+        $suratJalanProduct->delete();
+        return redirect()->back()->with('success', 'Product surat jalan deleted successfully');
+    }
+
+    public function cetakSuratJalanExcel($code)
+    {
+        $suratJalan = SuratJalan::where('kode', $code)->first();
+        $suratJalanProducts = SuratJalanProduct::where('surat_jalan_id', $suratJalan->id)->get();
+        // return view('admin.export.surat-jalan-excel', compact('suratJalan', 'suratJalanProducts'));
+        return Excel::download(new ExportSuratJalan($suratJalan, $suratJalanProducts), 'surat-jalan-' . $suratJalan->kode . '.xlsx');
+    }
+
+    
+
+
+
 
     // History Report
     public function reportMasuk()
@@ -594,7 +647,7 @@ class AdminController extends Controller
 
     public function reportKeluar()
     {
-        $reports = Report::where('jenis', 'keluar')->latest()->get();
+        $reports = SuratJalan::latest()->get();
         return view('admin.report-history-keluar', compact('reports'));
     }
 
