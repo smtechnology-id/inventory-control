@@ -126,9 +126,14 @@ Route::group(['middleware' => ['authCheck:admin']], function () {
     // Filter Report History
     Route::get('/admin/report/history/masuk/filter', [AdminController::class, 'reportHistoryMasukFilter'])->name('admin.report.history.masuk.filter');
 
+    // Filter Stock Opname
+    Route::get('/admin/stock-opname/filter', [AdminController::class, 'stockOpnameFilter'])->name('admin.stock.opname.filter');
+
 
     // Download Excel 
     Route::get('admin/report/masuk/download/excel/{from}/{to}', [AdminController::class, 'downloadReportMasukExcel'])->name('admin.report.masuk.download.excel');
+    Route::get('admin/transfer-stock/download/excel/{from}/{to}', [AdminController::class, 'downloadTransferStockExcel'])->name('admin.transfer.stock.download.excel');
+    Route::get('admin/stock-opname/download/excel/{from}/{to}', [AdminController::class, 'downloadStockOpnameExcel'])->name('admin.stock.opname.download.excel');
 
     // Surat Jalan
     Route::get('/admin/surat-jalan/{code}', [AdminController::class, 'addProductSuratJalan'])->name('admin.add.product.surat.jalan');

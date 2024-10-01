@@ -20,7 +20,9 @@ use App\Models\TransferStock;
 use App\Exports\ExportSuratJalan;
 use App\Models\SuratJalanProduct;
 use App\Exports\ExportReportMasuk;
+use App\Exports\ExportStockOpname;
 use App\Exports\ExportReportKeluar;
+use App\Exports\ExportTransferStock;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -714,6 +716,15 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Transfer stock added successfully');
     }
 
+    public function transferStockFilter(Request $request)
+    {
+        $transfers = TransferStock::whereBetween('created_at', [$request->from, $request->to])
+            ->get();
+        $from = $request->from;
+        $to = $request->to;
+        return view('admin.transfer-stock-filter', compact('transfers', 'from', 'to'));
+    }
+
 
     // Stock Opname
     public function stockOpname()
@@ -721,6 +732,14 @@ class AdminController extends Controller
         $stockOpnames = StockOpname::latest()->get();
         $stocks = Stock::all();
         return view('admin.stock-opname', compact('stockOpnames', 'stocks'));
+    }
+    public function stockOpnameFilter(Request $request)
+    {
+        $stockOpnames = StockOpname::whereBetween('created_at', [$request->from, $request->to])
+            ->get();
+        $from = $request->from;
+        $to = $request->to;
+        return view('admin.stock-opname-filter', compact('stockOpnames', 'from', 'to'));
     }
 
     public function addStockOpname()
@@ -787,6 +806,8 @@ class AdminController extends Controller
         return view('admin.report-history-masuk-filter', compact('reports', 'from', 'to'));
     }
 
+
+
     // Download Excel
     public function downloadReportMasukExcel($from, $to)
     {
@@ -796,5 +817,15 @@ class AdminController extends Controller
     public function downloadReportKeluarExcel($from, $to)
     {
         return Excel::download(new ExportReportKeluar($from, $to), 'report-keluar.xlsx');
+    }
+
+    public function downloadTransferStockExcel($from, $to)
+    {
+        return Excel::download(new ExportTransferStock($from, $to), 'transfer-stock.xlsx');
+    }
+
+    public function downloadStockOpnameExcel($from, $to)
+    {
+        return Excel::download(new ExportStockOpname($from, $to), 'stock-opname.xlsx');
     }
 }

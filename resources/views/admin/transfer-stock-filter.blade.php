@@ -28,6 +28,7 @@
     </form>
     <div class="row">
         <div class="col-12">
+            <a href="{{ route('admin.transfer.stock.download.excel', ['from' => $from, 'to' => $to]) }}" class="btn btn-sm btn-success">Cetak Excel</a>
             <div class="card">
                 <div class="card-header">
                     <h3>Transfer Stock</h3>
@@ -84,8 +85,9 @@
 
             });
         });
+        @section('script')
 
-        function openFilter() {
+            function openFilter() {
                 const form = document.querySelector('form');
                 const action = form.getAttribute('action');
                 const from = form.querySelector('input[name="from"]').value;
@@ -93,6 +95,7 @@
 
                 const url = `${action}?from=${from}&to=${to}`;
                 window.open(url, '_blank');
-        }
+            }
+        @endsection
     </script>
 @endsection
