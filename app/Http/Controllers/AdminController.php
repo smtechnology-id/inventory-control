@@ -25,6 +25,7 @@ use App\Exports\ExportReportKeluar;
 use App\Exports\ExportTransferStock;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ExportReportBarangKeluar;
 
 class AdminController extends Controller
 {
@@ -649,6 +650,12 @@ class AdminController extends Controller
 
     public function reportKeluar()
     {
+        $reports = SuratJalanProduct::latest()->get();
+        return view('admin.report-history-product-keluar', compact('reports'));
+    }
+
+    public function reportSuratJalan()
+    {
         $reports = SuratJalan::latest()->get();
         return view('admin.report-history-keluar', compact('reports'));
     }
@@ -806,6 +813,14 @@ class AdminController extends Controller
         return view('admin.report-history-masuk-filter', compact('reports', 'from', 'to'));
     }
 
+    public function reportHistoryProductKeluarFilter(Request $request)
+    {
+        $reports = SuratJalanProduct::whereBetween('created_at', [$request->from, $request->to])
+            ->get();
+        $from = $request->from;
+        $to = $request->to;
+        return view('admin.report-history-product-keluar-filter', compact('reports', 'from', 'to'));
+    }
 
 
     // Download Excel
@@ -827,5 +842,10 @@ class AdminController extends Controller
     public function downloadStockOpnameExcel($from, $to)
     {
         return Excel::download(new ExportStockOpname($from, $to), 'stock-opname.xlsx');
+    }
+
+    public function downloadReportHistoryProductKeluarExcel($from, $to)
+    {
+        return Excel::download(new ExportReportBarangKeluar($from, $to), 'report-history-product-keluar.xlsx');
     }
 }

@@ -99,6 +99,7 @@ Route::group(['middleware' => ['authCheck:admin']], function () {
     // Report
     Route::get('/admin/report/masuk', [AdminController::class, 'reportMasuk'])->name('admin.report.masuk');
     Route::get('/admin/report/keluar', [AdminController::class, 'reportKeluar'])->name('admin.report.keluar');
+    Route::get('/admin/report/surat-jalan', [AdminController::class, 'reportSuratJalan'])->name('admin.report.surat.jalan');
     Route::get('/admin/report/add/masuk', [AdminController::class, 'addReportMasuk'])->name('admin.add.report.masuk');
     Route::get('/admin/report/add/keluar', [AdminController::class, 'addReportKeluar'])->name('admin.add.report.keluar');
 
@@ -129,12 +130,15 @@ Route::group(['middleware' => ['authCheck:admin']], function () {
     // Filter Stock Opname
     Route::get('/admin/stock-opname/filter', [AdminController::class, 'stockOpnameFilter'])->name('admin.stock.opname.filter');
 
+    // Filter Report History
+    Route::get('/admin/report/history/keluar/filter', [AdminController::class, 'reportHistoryProductKeluarFilter'])->name('admin.report.history.keluar.filter');
+
 
     // Download Excel 
     Route::get('admin/report/masuk/download/excel/{from}/{to}', [AdminController::class, 'downloadReportMasukExcel'])->name('admin.report.masuk.download.excel');
     Route::get('admin/transfer-stock/download/excel/{from}/{to}', [AdminController::class, 'downloadTransferStockExcel'])->name('admin.transfer.stock.download.excel');
     Route::get('admin/stock-opname/download/excel/{from}/{to}', [AdminController::class, 'downloadStockOpnameExcel'])->name('admin.stock.opname.download.excel');
-
+    Route::get('admin/report/history/keluar/download/excel/{from}/{to}', [AdminController::class, 'downloadReportHistoryProductKeluarExcel'])->name('admin.report.history.keluar.download.excel');
     // Surat Jalan
     Route::get('/admin/surat-jalan/{code}', [AdminController::class, 'addProductSuratJalan'])->name('admin.add.product.surat.jalan');
     Route::post('/admin/surat-jalan/store', [AdminController::class, 'storeProductSuratJalan'])->name('admin.store.product.surat.jalan');
