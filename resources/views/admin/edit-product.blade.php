@@ -59,14 +59,6 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label for="price" class="mb-2">Harga <span class="text-danger">*</span></label>
-                                    <input type="number" class="form-control" id="price" name="price" required value="{{ $product->harga }}">
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label for="stock_awal" class="mb-2">Stock Awal <span class="text-danger">*</span></label>
-                                    <input type="number" class="form-control" id="stock_awal" name="stock_awal" required value="{{ $product->stock_awal }}">
-                                </div>
-                                <div class="form-group mb-3">
                                     <label for="stock_minimal" class="mb-2">Stock Minimal <span class="text-danger">*</span></label>
                                     <input type="number" class="form-control" id="stock_minimal" name="stock_minimal"
                                         required value="{{ $product->stock_minimal }}">

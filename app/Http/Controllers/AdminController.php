@@ -46,7 +46,7 @@ class AdminController extends Controller
             $product = Product::find($product_id);
             $stockMinimal = $product->stock_minimal;
 
-            $stockKritisFlag = $s->stock < $stockMinimal; // Menggunakan nama variabel yang lebih jelas
+            $stockKritisFlag = $s->stock <= $stockMinimal; // Menggunakan nama variabel yang lebih jelas
             if ($stockKritisFlag) {
                 $stockKritis[] = $s; // Menambahkan stok ke array jika kritis
             }
@@ -83,10 +83,8 @@ class AdminController extends Controller
             'nomor_material' => 'required',
             'kode_barang' => 'required',
             'name' => 'required',
-            'price' => 'required',
-            'stock_awal' => 'required',
             'stock_minimal' => 'required',
-            'keterangan' => 'required',
+            'keterangan' => 'nullable',
         ]);
 
         $product = new Product();
@@ -95,8 +93,6 @@ class AdminController extends Controller
         $product->nomor_material = $request->nomor_material;
         $product->kode_barang = $request->kode_barang;
         $product->nama_barang = $request->name;
-        $product->harga = $request->price;
-        $product->stock_awal = $request->stock_awal;
         $product->stock_minimal = $request->stock_minimal;
         $product->keterangan = $request->keterangan;
         $product->slug = Str::slug($request->name);
@@ -120,10 +116,8 @@ class AdminController extends Controller
             'nomor_material' => 'required',
             'kode_barang' => 'required',
             'name' => 'required',
-            'price' => 'required',
-            'stock_awal' => 'required',
             'stock_minimal' => 'required',
-            'keterangan' => 'required',
+            'keterangan' => 'nullable',
         ]);
 
         $product = Product::where('id', $request->id)->first();
@@ -132,8 +126,6 @@ class AdminController extends Controller
         $product->nomor_material = $request->nomor_material;
         $product->kode_barang = $request->kode_barang;
         $product->nama_barang = $request->name;
-        $product->harga = $request->price;
-        $product->stock_awal = $request->stock_awal;
         $product->stock_minimal = $request->stock_minimal;
         $product->keterangan = $request->keterangan;
         $product->save();
@@ -606,6 +598,14 @@ class AdminController extends Controller
         if (!$stock) {
             return redirect()->back()->with('error', 'Stock product tidak ada');
         } else {
+            if ($stock->stock < $request->qty) {
+                return redirect()->back()->with('error', 'Stock product tidak cukup');
+            }
+
+            // Update Stock
+            $stock->stock -= $request->qty;
+            $stock->save();
+
             $suratJalanProduct = new SuratJalanProduct();
             $suratJalanProduct->surat_jalan_id = $request->surat_jalan_id;
             $suratJalanProduct->stock_id = $stock->id;

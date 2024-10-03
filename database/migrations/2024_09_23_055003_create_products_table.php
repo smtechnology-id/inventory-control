@@ -20,11 +20,9 @@ return new class extends Migration
             $table->string('nomor_material');
             $table->string('kode_barang');
             $table->string('nama_barang');
-            $table->integer('harga');
             $table->string('slug')->unique();
-            $table->integer('stock_awal');
             $table->integer('stock_minimal');
-            $table->string('keterangan');
+            $table->string('keterangan')->nullable();
             $table->timestamps();
         });
     }

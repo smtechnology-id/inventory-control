@@ -153,9 +153,82 @@ Route::group(['middleware' => ['authCheck:admin']], function () {
 // Supervisor middleware
 Route::group(['middleware' => ['authCheck:supervisor']], function () {
     Route::get('/supervisor/dashboard', [SupervisorController::class, 'index'])->name('supervisor.dashboard');
+
+    // Product
+    Route::get('/supervisor/product', [SupervisorController::class, 'product'])->name('supervisor.product');
+
+    // Category
+    Route::get('/supervisor/category', [SupervisorController::class, 'category'])->name('supervisor.category');
+
+    // Unit
+    Route::get('/supervisor/unit', [SupervisorController::class, 'unit'])->name('supervisor.unit');
+
+    // Stock
+    Route::get('/supervisor/stock', [SupervisorController::class, 'stock'])->name('supervisor.stock');
+
+    // Report
+    Route::get('/supervisor/report/masuk', [SupervisorController::class, 'reportMasuk'])->name('supervisor.report.masuk');
+    Route::get('/supervisor/report/keluar', [SupervisorController::class, 'reportKeluar'])->name('supervisor.report.keluar');
+    Route::get('/supervisor/report/surat-jalan', [SupervisorController::class, 'reportSuratJalan'])->name('supervisor.report.surat.jalan');
+
+    // Transfer Stock
+    Route::get('/supervisor/transfer-stock', [SupervisorController::class, 'transferStock'])->name('supervisor.transfer.stock');
+
+    // Stock Opname 
+    Route::get('/supervisor/stock-opname', [SupervisorController::class, 'stockOpname'])->name('supervisor.stock.opname');
+
+    // Gudang
+    Route::get('/supervisor/gudang', [SupervisorController::class, 'gudang'])->name('supervisor.gudang');
+
+    // Driver
+    Route::get('/supervisor/driver', [SupervisorController::class, 'driver'])->name('supervisor.driver');
+
+    // Supplier
+    Route::get('/supervisor/supplier', [SupervisorController::class, 'supplier'])->name('supervisor.supplier');
+
+    // Konsumen
+    Route::get('/supervisor/konsumen', [SupervisorController::class, 'konsumen'])->name('supervisor.konsumen');
+
+    // Account
+    Route::get('/supervisor/account/supervisor', [SupervisorController::class, 'accountSupervisor'])->name('supervisor.account.supervisor');
+    Route::get('/supervisor/account/staff', [SupervisorController::class, 'accountStaff'])->name('supervisor.account.staff');
+    
+    // Surat Masuk
+    Route::get('/supervisor/surat-masuk', [SupervisorController::class, 'suratMasuk'])->name('supervisor.surat.masuk');
+    Route::get('/supervisor/report/history/masuk/filter', [SupervisorController::class, 'reportHistoryMasukFilter'])->name('supervisor.report.history.masuk.filter');
+    Route::get('/supervisor/report/history/masuk/download/excel/{from}/{to}', [AdminController::class, 'downloadReportMasukExcel'])->name('supervisor.report.history.masuk.download.excel');
+
+    // Surat Keluar
+    Route::get('/supervisor/report/history/keluar', [SupervisorController::class, 'reportKeluar'])->name('supervisor.report.keluar');
+    Route::get('/supervisor/report/history/keluar/filter', [SupervisorController::class, 'reportHistoryProductKeluarFilter'])->name('supervisor.report.history.keluar.filter');
+    Route::get('/supervisor/report/history/keluar/download/excel/{from}/{to}', [AdminController::class, 'downloadReportMasukExcel'])->name('supervisor.report.history.keluar.download.excel');
+
+    // Stock Opname
+    Route::get('/supervisor/stock-opname', [SupervisorController::class, 'stockOpname'])->name('supervisor.stock.opname');
+
+    Route::get('/supervisor/surat-jalan/{code}', [SupervisorController::class, 'addProductSuratJalan'])->name('supervisor.add.product.surat.jalan');
+
+    Route::get('/supervisor/cetak/surat-jalan/excel/{code}', [SupervisorController::class, 'cetakSuratJalanExcel'])->name('supervisor.cetak.surat.jalan.excel');
+
+
+    // Account
+    Route::get('/supervisor/account', [SupervisorController::class, 'account'])->name('supervisor.account');
+    Route::get('/supervisor/account/add', [SupervisorController::class, 'addAccount'])->name('supervisor.account.add');
+    Route::post('/supervisor/account/store', [SupervisorController::class, 'storeAccount'])->name('supervisor.account.store');
+
+    // Account Supervisor
+    Route::get('/supervisor/account/supervisor', [SupervisorController::class, 'accountSupervisor'])->name('supervisor.account.supervisor');
+    Route::get('/supervisor/account/staff', [SupervisorController::class, 'accountStaff'])->name('supervisor.account.staff');
+    Route::get('/supervisor/account/edit/{id}', [SupervisorController::class, 'editAccount'])->name('supervisor.account.edit');
+    Route::post('/supervisor/account/update', [SupervisorController::class, 'updateAccount'])->name('supervisor.account.update');
+    Route::get('/supervisor/account/delete/{id}', [SupervisorController::class, 'deleteAccount'])->name('supervisor.account.delete');
+
 });
 
 // Staff middleware
 Route::group(['middleware' => ['authCheck:staff']], function () {
     Route::get('/staff/dashboard', [StaffController::class, 'index'])->name('staff.dashboard');
+    Route::get('/staff/add/report/keluar', [StaffController::class, 'addReportKeluar'])->name('staff.add.report.keluar');
+    Route::post('/staff/report/keluar/store', [StaffController::class, 'storeReportKeluar'])->name('staff.report.keluar.store');
+    Route::get('/staff/add/product/surat-jalan/{code}', [StaffController::class, 'addProductSuratJalan'])->name('staff.add.product.surat.jalan');
 });

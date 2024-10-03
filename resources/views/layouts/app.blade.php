@@ -174,10 +174,90 @@
                             <a href="{{ route('supervisor.dashboard') }}"><i
                                     class="material-icons-two-tone">inbox</i>Dashboard</a>
                         </li>
+                        <li class="@yield('active_product')">
+                            <a href=""><i class="material-icons-two-tone">inventory_2</i>Product<i
+                                    class="material-icons has-sub-menu">keyboard_arrow_right</i></a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a href="{{ route('supervisor.product') }}">Product</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('supervisor.category') }}">Kategori</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('supervisor.unit') }}">Satuan</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="@yield('active_stock')">
+                            <a href="{{ route('supervisor.stock') }}"><i
+                                    class="material-icons-two-tone">inventory</i>Stock</a>
+                        </li>
+                        <li class="@yield('active_report')">
+                            <a href=""><i class="material-icons-two-tone">summarize</i>Report<i
+                                    class="material-icons has-sub-menu">keyboard_arrow_right</i></a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a href="{{ route('supervisor.report.masuk') }}">History Barang Masuk</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('supervisor.report.keluar') }}">History Barang Keluar</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('supervisor.report.surat.jalan') }}">History Surat Jalan</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('supervisor.transfer.stock') }}">History Transfer Stock</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('supervisor.stock.opname') }}">History Opname</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="sidebar-title">
+                            Additional Data
+                        </li>
+                        <li class="@yield('active_gudang')">
+                            <a href="{{ route('supervisor.gudang') }}"><i
+                                    class="material-icons-two-tone">factory</i>Gudang</a>
+                        </li>
+                        <li class="@yield('active_driver')">
+                            <a href="{{ route('supervisor.driver') }}"><i
+                                    class="material-icons-two-tone">local_shipping</i>Driver</a>
+                        </li>
+                        <li class="@yield('active_supplier')">
+                            <a href="{{ route('supervisor.supplier') }}"><i
+                                    class="material-icons-two-tone">groups</i>Supplier</a>
+                        </li>
+                        <li class="@yield('active_konsumen')">
+                            <a href="{{ route('supervisor.konsumen') }}"><i
+                                    class="material-icons-two-tone">person</i>Konsumen</a>
+                        </li>
+                        <li class="sidebar-title">
+                            Account
+                        </li>
+
+                        <li class="@yield('active_account')">
+                            <a href=""><i class="material-icons-two-tone">person_add</i>Account<i
+                                    class="material-icons has-sub-menu">keyboard_arrow_right</i></a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a href="{{ route('supervisor.account.supervisor') }}">Supervisor</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('supervisor.account.staff') }}">Staff</a>
+                                </li>
+                            </ul>
+                        </li>
                     @elseif (Auth::user()->level == 'staff')
                         <li class="@yield('active_dashboard')">
                             <a href="{{ route('staff.dashboard') }}"><i
                                     class="material-icons-two-tone">inbox</i>Dashboard</a>
+                        </li>
+                        <li class="@yield('active_addReport')">
+                            <a href="{{ route('staff.add.report.keluar') }}"><i
+                                    class="material-icons-two-tone">summarize</i>Add Report Keluar</a>
                         </li>
                     @endif
 
@@ -196,7 +276,7 @@
                         </div>
                         <div class="d-flex">
                             <ul class="navbar-nav">
-                                
+
                                 <li class="nav-item hidden-on-mobile">
                                     <a class="nav-link" href="{{ route('logout') }}">Logout</a>
                                 </li>

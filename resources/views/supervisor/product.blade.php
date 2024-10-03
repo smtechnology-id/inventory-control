@@ -17,8 +17,7 @@
                 <div class="card-header">
                     <h3>Product</h3>
                 </div>
-                <div class="card-body">
-                    <a href="{{ route('admin.product-add') }}" class="btn btn-primary mb-3">Add Product</a>
+                    <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-bordered" id="datatable1" class="display" style="width:100%">
                             <thead>
@@ -31,7 +30,6 @@
                                     <th>Kategori</th>
                                     <th>Stock Minimal</th>
                                     <th>Keterangan</th>
-                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -45,10 +43,6 @@
                                         <td>{{ $product->category->name }}</td>
                                         <td>{{ $product->stock_minimal }}</td>
                                         <td>{{ $product->keterangan }}</td>
-                                        <td>
-                                            <a href="{{ route('admin.product.edit', $product->slug) }}" class="btn btn-warning">Edit</a>
-                                            <a href="{{ route('admin.product.delete', $product->slug) }}" class="btn btn-danger">Delete</a>
-                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>

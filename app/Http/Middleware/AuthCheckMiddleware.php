@@ -17,7 +17,7 @@ class AuthCheckMiddleware
     public function handle(Request $request, Closure $next, ...$levels)
     {
         if (empty($levels) || !Auth::check() || !in_array(Auth::user()->level, $levels)) {
-            return redirect('/login');
+            return redirect('/');
         }
         
         return $next($request);
