@@ -65,6 +65,14 @@
                             <label for="keterangan" class="form-label">Keterangan</label>
                             <textarea name="keterangan" id="keterangan" class="form-control"></textarea>
                         </div>
+                        <div class="mb-3">
+                            <label for="refrensi" class="form-label">Refrensi</label>
+                            <input type="text" name="refrensi" id="refrensi" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="lokasi_kirim" class="form-label">Lokasi Kirim</label>
+                            <input type="text" name="lokasi_kirim" id="lokasi_kirim" class="form-control">
+                        </div>
                         <button type="submit" class="btn btn-primary">Transfer</button>
                     </form>
                 </div>

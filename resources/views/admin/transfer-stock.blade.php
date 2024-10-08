@@ -44,6 +44,8 @@
                                         <th>Kode Barang</th>
                                         <th>Gudang Awal</th>
                                         <th>Gudang Tujuan</th>
+                                        <th>Refrensi</th>
+                                        <th>Lokasi Kirim</th>
                                         <th>Jumlah</th>
                                         <th>Waktu</th>
                                     </tr>
@@ -56,6 +58,8 @@
                                             <td>{{ $transfer->product->kode_barang }}</td>
                                             <td>{{ $transfer->gudangAwal->name }}</td>
                                             <td>{{ $transfer->gudangTujuan->name }}</td>
+                                            <td>{{ $transfer->refrensi }}</td>
+                                            <td>{{ $transfer->lokasi_kirim }}</td>
                                             <td>{{ $transfer->quantity }}</td>
                                             <td>{{ $transfer->created_at->format('d-m-Y H:i:s') }}</td>
                                         </tr>

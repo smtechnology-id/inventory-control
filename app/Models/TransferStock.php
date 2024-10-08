@@ -15,6 +15,8 @@ class TransferStock extends Model
         'gudang_tujuan',
         'quantity',
         'keterangan',
+        'refrensi',
+        'lokasi_kirim',
     ];
 
     public function product()

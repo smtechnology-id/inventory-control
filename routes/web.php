@@ -106,6 +106,16 @@ Route::group(['middleware' => ['authCheck:admin']], function () {
     Route::post('/admin/report/masuk/store', [AdminController::class, 'storeReportMasuk'])->name('admin.report.masuk.store');
     Route::post('/admin/report/keluar/store', [AdminController::class, 'storeReportKeluar'])->name('admin.report.keluar.store');
 
+    // Edit Report Masuk
+    Route::get('/admin/report/masuk/edit/{id}', [AdminController::class, 'editReportMasuk'])->name('admin.report.masuk.edit');
+    Route::post('/admin/report/masuk/update', [AdminController::class, 'updateReportMasuk'])->name('admin.report.masuk.update');
+    Route::get('/admin/report/masuk/delete/{id}', [AdminController::class, 'deleteReportMasuk'])->name('admin.report.masuk.delete');
+
+
+    // Edit Report Keluar
+    Route::post('/admin/report/keluar/update', [AdminController::class, 'updateReportKeluar'])->name('admin.report.keluar.update');
+    Route::get('/admin/report/keluar/delete/{id}', [AdminController::class, 'deleteReportKeluar'])->name('admin.report.keluar.delete');
+
     // Transfer Stock
     Route::get('/admin/transfer-stock', [AdminController::class, 'transferStock'])->name('admin.transfer.stock');
     Route::get('/admin/transfer-stock/create', [AdminController::class, 'addTransferStock'])->name('admin.transfer.stock.create');

@@ -537,6 +537,59 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Report added successfully');
     }
 
+    public function editReportMasuk($id)
+    {
+        $report = Report::find($id);
+        $stocks = Stock::all();
+        $drivers = Driver::all();
+        $suppliers = Supplier::all();
+        $konsumens = Konsumen::all();
+        $gudangs = Gudang::all();
+        $products = Product::all();
+        $gudangs = Gudang::all();
+        return view('admin.edit-report-masuk', compact('report', 'stocks', 'drivers', 'suppliers', 'konsumens', 'gudangs', 'products'));
+    }
+
+    public function updateReportMasuk(Request $request)
+    {
+        $request->validate([
+            'product_id' => 'required',
+            'quantity' => 'required',
+            'gudang_id' => 'required',
+            'supplier_id' => 'required',
+            'nomor_po' => 'nullable',
+            'keterangan' => 'nullable',
+        ]);
+        $report = Report::find($request->id);
+        // Hitung selisih quantity
+        $selisih = $request->quantity - $report->quantity;
+        // Update Stock
+        $stock = Stock::find($report->stock_id);
+        if ($request->quantity > $report->quantity) {
+            $stock->stock += $selisih;
+        } else {
+            $stock->stock -= $selisih;
+        }
+        $stock->save();
+
+        $report->supplier_id = $request->supplier_id;
+        $report->gudang_id = $request->gudang_id;
+        $report->nomor_po = $request->nomor_po;
+        $report->keterangan = $request->keterangan;
+        $report->quantity = $request->quantity;
+        $report->save();
+        return redirect()->route('admin.report.masuk')->with('success', 'Report updated successfully');
+    }
+
+    public function deleteReportMasuk($id)
+    {
+        $report = Report::find($id);
+        $stock = Stock::find($report->stock_id);
+        $stock->stock -= $report->quantity;
+        $stock->save();
+        $report->delete();
+        return redirect()->back()->with('success', 'Report deleted successfully');
+    }
 
     public function addReportKeluar()
     {
@@ -637,10 +690,6 @@ class AdminController extends Controller
     }
 
     
-
-
-
-
     // History Report
     public function reportMasuk()
     {
@@ -650,8 +699,39 @@ class AdminController extends Controller
 
     public function reportKeluar()
     {
+        $suratJalans = SuratJalan::all();
         $reports = SuratJalanProduct::latest()->get();
-        return view('admin.report-history-product-keluar', compact('reports'));
+        return view('admin.report-history-product-keluar', compact('reports', 'suratJalans'));
+    }
+    public function updateReportKeluar(Request $request)
+    {
+        $request->validate([
+            'id' => 'required',
+            'qty' => 'required',
+            'keterangan' => 'nullable',
+        ]);
+        
+        $report = SuratJalanProduct::find($request->id);
+
+        // Hitung selisih quantity
+        $selisih = $request->qty - $report->qty;
+
+        // Update Stock
+        if ($request->qty > $report->qty) {
+            $stock = Stock::find($report->stock_id);
+            $stock->stock += $selisih;
+            $stock->save();
+        } else {
+            $stock = Stock::find($report->stock_id);
+            $stock->stock -= $selisih;
+            $stock->save();
+        }
+
+
+        $report->qty = $request->qty;
+        $report->keterangan = $request->keterangan;
+        $report->save();
+        return redirect()->back()->with('success', 'Report keluar updated successfully');
     }
 
     public function reportSuratJalan()
@@ -682,6 +762,8 @@ class AdminController extends Controller
             'gudang_awal' => 'required',
             'quantity' => 'required',
             'keterangan' => 'nullable',
+            'refrensi' => 'nullable',
+            'lokasi_kirim' => 'nullable',
         ]);
 
         $stockAwal = Stock::where('product_id', $request->product_id)
@@ -718,6 +800,8 @@ class AdminController extends Controller
         $transfer->gudang_awal = $request->gudang_awal;
         $transfer->quantity = $request->quantity;
         $transfer->keterangan = $request->keterangan;
+        $transfer->refrensi = $request->refrensi;
+        $transfer->lokasi_kirim = $request->lokasi_kirim;
         $transfer->save();
 
         return redirect()->back()->with('success', 'Transfer stock added successfully');
@@ -725,6 +809,12 @@ class AdminController extends Controller
 
     public function transferStockFilter(Request $request)
     {
+        if ($request->from == null) {
+            return redirect()->back()->with('error', 'Tanggal dari tidak boleh kosong');
+        }
+        if ($request->to == null) {
+            return redirect()->back()->with('error', 'Tanggal sampai tidak boleh kosong');
+        }
         $transfers = TransferStock::whereBetween('created_at', [$request->from, $request->to])
             ->get();
         $from = $request->from;
@@ -742,6 +832,12 @@ class AdminController extends Controller
     }
     public function stockOpnameFilter(Request $request)
     {
+        if ($request->from == null) {
+            return redirect()->back()->with('error', 'Tanggal dari tidak boleh kosong');
+        }
+        if ($request->to == null) {
+            return redirect()->back()->with('error', 'Tanggal sampai tidak boleh kosong');
+        }
         $stockOpnames = StockOpname::whereBetween('created_at', [$request->from, $request->to])
             ->get();
         $from = $request->from;
@@ -804,6 +900,12 @@ class AdminController extends Controller
     // filter History Report
     public function reportHistoryMasukFilter(Request $request)
     {
+        if ($request->from == null) {
+            return redirect()->back()->with('error', 'Tanggal dari tidak boleh kosong');
+        }
+        if ($request->to == null) {
+            return redirect()->back()->with('error', 'Tanggal sampai tidak boleh kosong');
+        }
         $reports = Report::where('jenis', 'masuk')
             ->whereBetween('created_at', [$request->from, $request->to])
             ->get();
@@ -815,6 +917,12 @@ class AdminController extends Controller
 
     public function reportHistoryProductKeluarFilter(Request $request)
     {
+        if ($request->from == null) {
+            return redirect()->back()->with('error', 'Tanggal dari tidak boleh kosong');
+        }
+        if ($request->to == null) {
+            return redirect()->back()->with('error', 'Tanggal sampai tidak boleh kosong');
+        }
         $reports = SuratJalanProduct::whereBetween('created_at', [$request->from, $request->to])
             ->get();
         $from = $request->from;

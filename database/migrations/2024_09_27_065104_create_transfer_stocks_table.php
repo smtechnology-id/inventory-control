@@ -21,6 +21,8 @@ return new class extends Migration
             $table->foreign('gudang_tujuan')->references('id')->on('gudangs')->onDelete('cascade');
             $table->integer('quantity');
             $table->text('keterangan')->nullable();
+            $table->string('refrensi')->nullable();
+            $table->string('lokasi_kirim')->nullable();
             $table->timestamps();
         });
     }
