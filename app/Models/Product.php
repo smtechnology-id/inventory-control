@@ -20,6 +20,7 @@ class Product extends Model
         'stock_minimal',
         'keterangan',
         'harga',
+        'stock',
     ];
 
     public function category()
@@ -30,5 +31,10 @@ class Product extends Model
     public function unit()
     {
         return $this->belongsTo(Unit::class);
+    }
+
+    public function gudang()
+    {
+        return $this->belongsTo(Gudang::class);
     }
 }

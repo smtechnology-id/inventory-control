@@ -27,6 +27,8 @@
                                     <th>Nomor Material</th>
                                     <th>Kode Barang</th>
                                     <th>Nama Barang</th>
+                                    <th>Gudang</th>
+                                    <th>Stock</th>
                                     <th>Satuan</th>
                                     <th>Kategori</th>
                                     <th>Stock Minimal</th>
@@ -41,6 +43,8 @@
                                         <td>{{ $product->nomor_material }}</td>
                                         <td>{{ $product->kode_barang }}</td>
                                         <td>{{ $product->nama_barang }}</td>
+                                        <td>{{ $product->gudang->name }}</td>
+                                        <td>{{ $product->stock }}</td>
                                         <td>{{ $product->unit->name }}</td>
                                         <td>{{ $product->category->name }}</td>
                                         <td>{{ $product->stock_minimal }}</td>

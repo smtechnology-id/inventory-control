@@ -43,7 +43,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-4">
+        {{-- <div class="col-xl-4">
             <div class="card widget widget-stats">
                 <div class="card-body">
                     <div class="widget-stats-container d-flex">
@@ -58,8 +58,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-xl-4">
+        </div> --}}
+        {{-- <div class="col-xl-4">
             <div class="card widget widget-stats">
                 <div class="card-body">
                     <div class="widget-stats-container d-flex">
@@ -74,8 +74,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-xl-4">
+        </div> --}}
+        {{-- <div class="col-xl-4">
             <div class="card widget widget-stats">
                 <div class="card-body">
                     <div class="widget-stats-container d-flex">
@@ -90,7 +90,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <div class="col-xl-4">
             <div class="card widget widget-stats">
                 <div class="card-body">
@@ -129,11 +129,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($stockKritis as $stock)
+                                @foreach ($productKritis as $stock)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $stock->product->nama_barang }}</td>
-                                        <td>{{ $stock->product->kode_barang }}</td>
+                                        <td>{{ $stock->nama_barang }}</td>
+                                        <td>{{ $stock->kode_barang }}</td>
                                         <td>{{ $stock->gudang->name }}</td>
                                         <td>{{ $stock->stock }}</td>
                                     </tr>

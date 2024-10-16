@@ -33,25 +33,12 @@ class AdminController extends Controller
     {
         $totalBarang = Product::count();
         $gudang = Gudang::count();
-        $supplier = Supplier::count();
-        $konsumen = Konsumen::count();
-        $driver = Driver::count();
+        $product = Product::all();
         $user = User::count();
 
-        // Stock Kritis
-        $stock = Stock::all();
-        $stockKritis = []; // Inisialisasi array untuk menyimpan stok kritis
-        foreach ($stock as $s) {
-            $product_id = $s->product_id;
-            $product = Product::find($product_id);
-            $stockMinimal = $product->stock_minimal;
-
-            $stockKritisFlag = $s->stock <= $stockMinimal; // Menggunakan nama variabel yang lebih jelas
-            if ($stockKritisFlag) {
-                $stockKritis[] = $s; // Menambahkan stok ke array jika kritis
-            }
-        }
-        return view('admin.dashboard', compact('totalBarang', 'gudang', 'supplier', 'konsumen', 'driver', 'user', 'stockKritis'));
+        // Priduct Kritis
+        $productKritis = Product::where('stock', '<=', 'stock_minimal')->get();
+        return view('admin.dashboard', compact('totalBarang', 'gudang', 'productKritis', 'user'));
     }
 
     // Product
@@ -70,32 +57,39 @@ class AdminController extends Controller
         if (Unit::count() == 0) {
             return redirect()->route('admin.unit')->with('error', 'Unit tidak ada, silahkan tambahkan unit terlebih dahulu');
         }
+        if (Gudang::count() == 0) {
+            return redirect()->route('admin.gudang')->with('error', 'Gudang tidak ada, silahkan tambahkan gudang terlebih dahulu');
+        }
         $categories = Category::all();
         $units = Unit::all();
-        return view('admin.add-product', compact('categories', 'units'));
+        $gudangs = Gudang::all();
+        return view('admin.add-product', compact('categories', 'units', 'gudangs'));
     }
 
     public function storeProduct(Request $request)
     {
         $request->validate([
-            'category' => 'required',
-            'unit' => 'required',
+            'category_id' => 'required',
+            'unit_id' => 'required',
             'nomor_material' => 'required',
             'kode_barang' => 'required',
             'name' => 'required',
             'stock_minimal' => 'required',
             'keterangan' => 'nullable',
+            'gudang_id' => 'required',
         ]);
 
         $product = new Product();
-        $product->category_id = $request->category;
-        $product->unit_id = $request->unit;
+        $product->category_id = $request->category_id;
+        $product->unit_id = $request->unit_id;
         $product->nomor_material = $request->nomor_material;
         $product->kode_barang = $request->kode_barang;
         $product->nama_barang = $request->name;
         $product->stock_minimal = $request->stock_minimal;
         $product->keterangan = $request->keterangan;
         $product->slug = Str::slug($request->name);
+        $product->gudang_id = $request->gudang_id;
+        $product->stock = 0;
         $product->save();
         return redirect()->route('admin.product')->with('success', 'Product added successfully');
     }
