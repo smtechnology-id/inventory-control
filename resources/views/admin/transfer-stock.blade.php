@@ -40,10 +40,8 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Nama Barang</th>
-                                        <th>Kode Barang</th>
-                                        <th>Gudang Awal</th>
-                                        <th>Gudang Tujuan</th>
+                                        <th>Produk Awal</th>
+                                        <th>Produk Tujuan</th>
                                         <th>Refrensi</th>
                                         <th>Lokasi Kirim</th>
                                         <th>Jumlah</th>
@@ -54,13 +52,11 @@
                                     @foreach ($transfers as $transfer)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $transfer->product->nama_barang }}</td>
-                                            <td>{{ $transfer->product->kode_barang }}</td>
-                                            <td>{{ $transfer->gudangAwal->name }}</td>
-                                            <td>{{ $transfer->gudangTujuan->name }}</td>
+                                            <td>{{ $transfer->productAwal->nama_barang }} - {{ $transfer->productAwal->gudang->name }}</td>
+                                            <td>{{ $transfer->productTujuan->nama_barang }} - {{ $transfer->productTujuan->gudang->name }}</td>
                                             <td>{{ $transfer->refrensi }}</td>
                                             <td>{{ $transfer->lokasi_kirim }}</td>
-                                            <td>{{ $transfer->quantity }}</td>
+                                            <td>{{ $transfer->quantity }} {{ $transfer->productAwal->unit->name }}</td>
                                             <td>{{ $transfer->created_at->format('d-m-Y H:i:s') }}</td>
                                         </tr>
                                     @endforeach

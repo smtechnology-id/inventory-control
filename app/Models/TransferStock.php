@@ -10,27 +10,21 @@ class TransferStock extends Model
     use HasFactory;
 
     protected $fillable = [
-        'product_id',
-        'gudang_awal',
-        'gudang_tujuan',
+        'product_awal',
+        'product_tujuan',
         'quantity',
         'keterangan',
         'refrensi',
         'lokasi_kirim',
     ];
 
-    public function product()
+    public function productAwal()
     {
-        return $this->belongsTo(Product::class, 'product_id');
+        return $this->belongsTo(Product::class, 'product_awal');
     }
 
-    public function gudangTujuan()
+    public function productTujuan()
     {
-        return $this->belongsTo(Gudang::class, 'gudang_tujuan');
-    }
-
-    public function gudangAwal()
-    {
-        return $this->belongsTo(Gudang::class, 'gudang_awal');
+        return $this->belongsTo(Product::class, 'product_tujuan');
     }
 }

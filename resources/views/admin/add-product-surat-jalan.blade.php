@@ -14,6 +14,57 @@
         <div class="col">
             <div class="card">
                 <div class="card-body">
+                    <table class="table table-bordered">
+                        <tr>
+                            <td>Kode Surat Jalan</td>
+                            <td>:</td>
+                            <td>{{ $suratJalan->kode }}</td>
+                        </tr>
+                        <tr>
+                            <td>Nomor DO</td>
+                            <td>:</td>
+                            <td>{{ $suratJalan->nomor_do }}/StockoutCMT-ELN/X/2024</td>
+                        </tr>
+                        <tr>
+                            <td>Via</td>
+                            <td>:</td>
+                            <td>{{ $suratJalan->via }}</td>
+                        </tr>
+                        <tr>
+                            <td>Carrier</td>
+                            <td>:</td>
+                            <td>{{ $suratJalan->carrier }}</td>
+                        </tr>
+                        <tr>
+                            <td>Reff</td>
+                            <td>:</td>
+                            <td>{{ $suratJalan->reff }}</td>
+                        </tr>
+                        <tr>
+                            <td>Truck Number</td>
+                            <td>:</td>
+                            <td>{{ $suratJalan->truck_number }}</td>
+                        </tr>
+                        <tr>
+                            <td>Delivered By</td>
+                            <td>:</td>
+                            <td>{{ $suratJalan->delivered_by }}</td>
+                        </tr>
+                        {{-- Konsumen --}}
+                        <tr>
+                            <td>Konsumen</td>
+                            <td>:</td>
+                            <td>{{ $suratJalan->konsumen->name }} -  - {{ $suratJalan->konsumen->alamat }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                         Tambah Produk
                     </button>
@@ -39,20 +90,12 @@
                                             <select name="product_id" id="product_id" class="form-control">
                                                 <option value="">Pilih Product</option>
                                                 @foreach ($products as $product)
-                                                    <option value="{{ $product->id }}">{{ $product->nama_barang }}</option>
+                                                    <option value="{{ $product->id }}">{{ $product->nama_barang }} - {{ $product->gudang->name }} - {{ $product->stock }} {{ $product->unit->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                         <input type="hidden" name="surat_jalan_id" value="{{ $suratJalan->id }}">
-                                        <div class="form-group">
-                                            <label for="gudang_id">Gudang</label>
-                                            <select name="gudang_id" id="gudang_id" class="form-control">
-                                                <option value="">Pilih Gudang</option>
-                                                @foreach ($gudangs as $gudang)
-                                                    <option value="{{ $gudang->id }}">{{ $gudang->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+                                       
                                         <div class="form-group">
                                             <label for="qty">Qty</label>
                                             <input type="number" name="qty" id="qty" class="form-control">
@@ -72,12 +115,15 @@
                         </div>
                     </div>
                 </div>
+
+                
                 <div class="table-responsive">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
                                 <th>No</th>
                                 <th>Kode Barang</th>
+                                <th>Nomor Material</th>
                                 <th>Product</th>
                                 <th>Qty</th>
                                 <th>Keterangan</th>
@@ -88,9 +134,10 @@
                             @foreach ($productSuratJalans as $suratJalanProduct)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $suratJalanProduct->stock->product->kode_barang }}</td>
-                                    <td>{{ $suratJalanProduct->stock->product->nama_barang }}</td>
-                                    <td>{{ $suratJalanProduct->qty }}</td>
+                                    <td>{{ $suratJalanProduct->product->kode_barang }}</td>
+                                    <td>{{ $suratJalanProduct->product->nomor_material }}</td>
+                                    <td>{{ $suratJalanProduct->product->nama_barang }}</td>
+                                    <td>{{ $suratJalanProduct->qty }} {{ $suratJalanProduct->product->unit->name }}</td>
                                     <td>{{ $suratJalanProduct->keterangan }}</td>
                                     <td>
                                         <a href="{{ route('admin.delete.product.surat.jalan', $suratJalanProduct->id) }}"

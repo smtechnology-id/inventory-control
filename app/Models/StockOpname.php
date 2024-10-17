@@ -11,15 +11,15 @@ class StockOpname extends Model
 
     protected $table = 'stock_opnames';
     protected $fillable = [
-        'stock_id',
+        'product_id',
         'stock_tercatat',
         'jumlah_aktual',
         'keterangan',
     ];
 
-    public function stock()
+    public function product()
     {
-        return $this->belongsTo(Stock::class);
+        return $this->belongsTo(Product::class);
     }
     
 }

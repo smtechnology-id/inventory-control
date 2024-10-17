@@ -138,7 +138,7 @@
                 <th colspan="3">From</th>
                 <th></th>
                 <th></th>
-                <th colspan="4">No: {{ $suratJalan->nomor_do }}</th>
+                <th colspan="4">No: {{ $suratJalan->nomor_do }}/StockoutCMT-ELN/X/2024 </th>
                </tr>
                <tr>
                 <td colspan="2">To : </td>
@@ -185,10 +185,10 @@
                <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $item->qty }}</td>
-                <td>{{ $item->stock->product->unit->name }}</td>
-                <td>{{ $item->stock->product->kode_barang}}</td>
-                <td colspan="3">{{ $item->stock->product->nama_barang }}</td>
-                <td>{{ $item->stock->gudang->name }}</td>
+                <td>{{ $item->product->unit->name }}</td>
+                <td>{{ $item->product->kode_barang}}</td>
+                <td colspan="3">{{ $item->product->nama_barang }}</td>
+                <td>{{ $item->product->gudang->name }}</td>
                 <td>{{ $item->keterangan }}</td>
                </tr>
                @endforeach

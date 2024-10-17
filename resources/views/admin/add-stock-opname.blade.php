@@ -27,16 +27,7 @@
                                     <select name="product_id" id="product_id" class="form-control" required>
                                         <option value="">Pilih Product</option>
                                         @foreach ($products as $product)
-                                            <option value="{{ $product->id }}">{{ $product->nama_barang }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label for="gudang_id" class="mb-2">Gudang <span class="text-danger">*</span></label>
-                                    <select name="gudang_id" id="gudang_id" class="form-control" required>
-                                        <option value="">Pilih Gudang</option>
-                                        @foreach ($gudangs as $gudang)
-                                            <option value="{{ $gudang->id }}">{{ $gudang->name }}</option>
+                                            <option value="{{ $product->id }}">{{ $product->nama_barang }} - {{ $product->gudang->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>

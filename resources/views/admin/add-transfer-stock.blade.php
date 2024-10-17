@@ -20,21 +20,14 @@
                 <div class="card-body">
                     <form action="{{ route('admin.transfer.stock.store') }}" method="post">
                         @csrf
-                        <div class="mb-3">
-                            <label for="product_id" class="form-label">Pilih Barang</label>
-                            <select name="product_id" id="product_id" class="form-select" required>
-                                @foreach ($products as $product)
-                                    <option value="{{ $product->id }}">{{ $product->nama_barang }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                        
                         <div class="row align-items-center">
                             <div class="col-5">
                                 <div class="mb-3">
-                                    <label for="gudang_awal" class="form-label">Pilih Gudang Lama</label>
-                                    <select name="gudang_awal" id="gudang_awal" class="form-select" required>
-                                        @foreach ($gudangs as $gudang)
-                                            <option value="{{ $gudang->id }}">{{ $gudang->name }}</option>
+                                    <label for="product_id" class="form-label">Pilih Barang</label>
+                                    <select name="product_awal" id="product_awal" class="form-select" required>
+                                        @foreach ($products as $product)
+                                            <option value="{{ $product->id }}">{{ $product->nama_barang }} - {{ $product->gudang->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -45,10 +38,10 @@
                             </div>
                             <div class="col-5">
                                 <div class="mb-3">
-                                    <label for="gudang_tujuan" class="form-label">Pilih Gudang Baru</label>
-                                    <select name="gudang_tujuan" id="gudang_tujuan" class="form-select" required>
-                                        @foreach ($gudangs as $gudang)
-                                            <option value="{{ $gudang->id }}">{{ $gudang->name }}</option>
+                                    <label for="product_tujuan" class="form-label">Pilih Barang</label>
+                                    <select name="product_tujuan" id="product_tujuan" class="form-select" required>
+                                        @foreach ($products as $product)
+                                            <option value="{{ $product->id }}">{{ $product->nama_barang }} - {{ $product->gudang->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -84,13 +77,13 @@
 @section('script')
     <script>
         $(document).ready(function() {
-            $('#product_id').select2({
+            $('#product_tujuan').select2({
 
             });
         });
 
         $(document).ready(function() {
-            $('#gudang_tujuan').select2({
+            $('#product_awal').select2({
 
             });
         });

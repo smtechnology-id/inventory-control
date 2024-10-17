@@ -46,7 +46,9 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
+                                        <th>Kode Barang</th>
                                         <th>Nama Barang</th>
+                                        <th>Nomor Material</th>
                                         <th>Gudang</th>
                                         <th>Jumlah</th>
                                         <th>Tanggal Keluar</th>
@@ -57,9 +59,11 @@
                                     @foreach ($reports as $report)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $report->stock->product->nama_barang }}</td>
-                                            <td>{{ $report->stock->gudang->name }}</td>
-                                            <td>{{ $report->qty }}</td>
+                                            <td>{{ $report->product->kode_barang }}</td>
+                                            <td>{{ $report->product->nomor_material }}</td>
+                                            <td>{{ $report->product->nama_barang }}</td>
+                                            <td>{{ $report->product->gudang->name }}</td>
+                                            <td>{{ round($report->qty) }} {{ $report->product->unit->name }}</td>
                                             <td>{{ $report->created_at->format('d-m-Y H:i') }}</td>
                                             <td>
                                                 <!-- Button trigger modal -->

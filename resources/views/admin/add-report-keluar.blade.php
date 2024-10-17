@@ -34,31 +34,16 @@
                                     </select>
                                 </div>
                                 <div class="form-group mb-3">
-                                    <label for="driver_id" class="mb-2">Driver <span
-                                            class="text-danger">*</span></label>
-                                    <select name="driver_id" id="driver_id" class="form-control select2" required>
-                                        <option value="">Pilih Driver</option>
-                                        @foreach ($drivers as $driver)
-                                            <option value="{{ $driver->id }}">{{ $driver->nama_driver }} -
-                                                {{ $driver->nomor_hp_driver }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label for="nomor_do" class="mb-2">Nomor DO <span class="text-danger">*</span></label>
-                                    <input type="text" name="nomor_do" id="nomor_do" class="form-control" required>
-                                </div>
-                                <div class="form-group mb-3">
                                     <label for="via" class="mb-2">Via</label>
                                     <input type="text" name="via" id="via" class="form-control" required>
                                 </div>
-                                
-                            </div>
-                            <div class="col-md-6">
                                 <div class="form-group mb-3">
                                     <label for="carrier" class="mb-2">Carrier</label>
                                     <input type="text" name="carrier" id="carrier" class="form-control" required>
                                 </div>
+                            </div>
+                            <div class="col-md-6">
+                               
                                 <div class="form-group mb-3">
                                     <label for="reff" class="mb-2">Reff</label>
                                     <input type="text" name="reff" id="reff" class="form-control" required>

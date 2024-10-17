@@ -26,7 +26,6 @@
                                         <th>No</th>
                                         <th>Kode</th>
                                         <th>Nomor DO</th>
-                                        <th>Driver</th>
                                         <th>Konsumen</th>
                                         <th>Via</th>
                                         <th>Carrier</th>
@@ -41,8 +40,7 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $report->kode }}</td>
-                                            <td>{{ $report->nomor_do }}</td>
-                                            <td>{{ $report->driver->name ?? '-' }}</td>
+                                            <td>{{ $report->nomor_do }}/StockoutCMT-ELN/X/2024</td>
                                             <td>{{ $report->konsumen->name ?? '-' }}</td>
                                             <td>{{ $report->via }}</td>
                                             <td>{{ $report->carrier }}</td>

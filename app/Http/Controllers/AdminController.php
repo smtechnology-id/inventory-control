@@ -87,7 +87,7 @@ class AdminController extends Controller
         $product->nama_barang = $request->name;
         $product->stock_minimal = $request->stock_minimal;
         $product->keterangan = $request->keterangan;
-        $product->slug = Str::slug($request->name);
+        $product->slug = Str::slug($request->name . '-' . $request->kode_barang);
         $product->gudang_id = $request->gudang_id;
         $product->stock = 0;
         $product->save();
@@ -300,9 +300,7 @@ class AdminController extends Controller
     public function stock()
     {
         $products = Product::all();
-        $gudangs = Gudang::all();
-        $stocks = Stock::all();
-        return view('admin.stock', compact('products', 'gudangs', 'stocks'));
+        return view('admin.stock', compact('products'));
     }
 
 
@@ -486,62 +484,45 @@ class AdminController extends Controller
     // Report
     public function addReportMasuk()
     {
-        $stocks = Stock::all();
-        $drivers = Driver::all();
-        $suppliers = Supplier::all();
         $konsumens = Konsumen::all();
         $gudangs = Gudang::all();
         $products = Product::all();
-        $gudangs = Gudang::all();
-        return view('admin.add-report-masuk', compact('stocks', 'drivers', 'suppliers', 'konsumens', 'gudangs', 'products'));
+        return view('admin.add-report-masuk', compact('products', 'konsumens', 'gudangs'));
     }
     public function storeReportMasuk(Request $request)
     {
         $request->validate([
             'product_id' => 'required',
             'quantity' => 'required',
-            'gudang_id' => 'required',
-            'supplier_id' => 'required',
             'nomor_po' => 'nullable',
             'keterangan' => 'nullable',
         ]);
-        //    check Berdasarkan product_id ada tidak
-        $stock = Stock::where('product_id', $request->product_id)
-            ->where('gudang_id', $request->gudang_id)
-            ->first();
-        if ($stock) {
-            $stock->stock += $request->quantity;
-            $stock->save();
-        } else {
-            $stock = new Stock();
-            $stock->product_id = $request->product_id;
-            $stock->gudang_id = $request->gudang_id;
-            $stock->stock = $request->quantity;
-            $stock->save();
+
+        // Check product_id ada tidak
+        $product = Product::find($request->product_id);
+        if (!$product) {
+            return redirect()->back()->with('error', 'Product tidak ada');
         }
+
+        // Add Quantity
+        $product->stock += $request->quantity;
+        $product->save();
+
+        // Add Report
         $report = new Report();
-        $report->stock_id = $stock->id;
-        $report->supplier_id = $request->supplier_id;
-        $report->gudang_id = $request->gudang_id;
+        $report->product_id = $request->product_id;
         $report->nomor_po = $request->nomor_po;
         $report->keterangan = $request->keterangan;
         $report->quantity = $request->quantity;
-        $report->jenis = 'masuk';
         $report->save();
-        return redirect()->back()->with('success', 'Report added successfully');
+        return redirect()->route('admin.report.masuk')->with('success', 'Report added successfully');
     }
 
     public function editReportMasuk($id)
     {
         $report = Report::find($id);
-        $stocks = Stock::all();
-        $drivers = Driver::all();
-        $suppliers = Supplier::all();
-        $konsumens = Konsumen::all();
-        $gudangs = Gudang::all();
-        $products = Product::all();
-        $gudangs = Gudang::all();
-        return view('admin.edit-report-masuk', compact('report', 'stocks', 'drivers', 'suppliers', 'konsumens', 'gudangs', 'products'));
+        $products = Product::where('id', $report->product_id)->get();
+        return view('admin.edit-report-masuk', compact('report', 'products'));
     }
 
     public function updateReportMasuk(Request $request)
@@ -549,25 +530,19 @@ class AdminController extends Controller
         $request->validate([
             'product_id' => 'required',
             'quantity' => 'required',
-            'gudang_id' => 'required',
-            'supplier_id' => 'required',
             'nomor_po' => 'nullable',
             'keterangan' => 'nullable',
         ]);
+
         $report = Report::find($request->id);
         // Hitung selisih quantity
         $selisih = $request->quantity - $report->quantity;
         // Update Stock
-        $stock = Stock::find($report->stock_id);
-        if ($request->quantity > $report->quantity) {
-            $stock->stock += $selisih;
-        } else {
-            $stock->stock -= $selisih;
-        }
-        $stock->save();
+        $product = Product::find($request->product_id);
 
-        $report->supplier_id = $request->supplier_id;
-        $report->gudang_id = $request->gudang_id;
+        $product->stock += $selisih;
+        $product->save();
+
         $report->nomor_po = $request->nomor_po;
         $report->keterangan = $request->keterangan;
         $report->quantity = $request->quantity;
@@ -587,19 +562,14 @@ class AdminController extends Controller
 
     public function addReportKeluar()
     {
-        $stocks = Stock::all();
-        $drivers = Driver::all();
         $konsumens = Konsumen::all();
-        $gudangs = Gudang::all();
         $products = Product::all();
-        return view('admin.add-report-keluar', compact('stocks', 'drivers', 'konsumens', 'gudangs', 'products'));
+        return view('admin.add-report-keluar', compact('products', 'konsumens'));
     }
 
     public function storeReportKeluar(Request $request)
     {
         $request->validate([
-            'driver_id' => 'required',
-            'nomor_do' => 'required',
             'konsumen_id' => 'required',
             'via' => 'required',
             'carrier' => 'required',
@@ -607,10 +577,16 @@ class AdminController extends Controller
             'truck_number' => 'required',
             'delivered_by' => 'required',
         ]);
+
+        // No DO mengambil urutan terakhir contoh 0001
+        $lastSuratJalan = SuratJalan::latest()->first();
+        $lastNumber = $lastSuratJalan ? intval(substr($lastSuratJalan->nomor_do, -4)) + 1 : 1;
+        $formattedNumber = str_pad($lastNumber, 4, '0', STR_PAD_LEFT);
+        $nomorDo = $formattedNumber;
+
         $suratJalan = new SuratJalan();
-        $suratJalan->driver_id = $request->driver_id;
         $suratJalan->konsumen_id = $request->konsumen_id;
-        $suratJalan->nomor_do = $request->nomor_do;
+        $suratJalan->nomor_do = $nomorDo;
         $suratJalan->via = $request->via;
         $suratJalan->carrier = $request->carrier;
         $suratJalan->reff = $request->reff;
@@ -635,27 +611,38 @@ class AdminController extends Controller
     {
         $request->validate([
             'product_id' => 'required',
-            'gudang_id' => 'required',
             'qty' => 'required',
             'keterangan' => 'nullable',
         ]);
-        $stock = Stock::where('product_id', $request->product_id)
-            ->where('gudang_id', $request->gudang_id)
-            ->first();
-        if (!$stock) {
-            return redirect()->back()->with('error', 'Stock product tidak ada');
+
+        $product = Product::find($request->product_id);
+        if (!$product) {
+            return redirect()->back()->with('error', 'Product tidak ada');
         } else {
-            if ($stock->stock < $request->qty) {
+            if ($product->stock < $request->qty) {
                 return redirect()->back()->with('error', 'Stock product tidak cukup');
             }
 
-            // Update Stock
-            $stock->stock -= $request->qty;
-            $stock->save();
+            // Cek apaka produk sudah pernah ditambahkan
+            $suratJalanProduct = SuratJalanProduct::where('surat_jalan_id', $request->surat_jalan_id)
+                ->where('product_id', $request->product_id)
+                ->first();
+            if ($suratJalanProduct) {
+                // Tambahkan quantity
+                $suratJalanProduct->qty += $request->qty;
+                $suratJalanProduct->save();
+
+                $product->stock -= $request->qty;
+                $product->save();
+                return redirect()->back()->with('success', 'Product surat jalan updated successfully');
+            }
+
+            $product->stock -= $request->qty;
+            $product->save();
 
             $suratJalanProduct = new SuratJalanProduct();
             $suratJalanProduct->surat_jalan_id = $request->surat_jalan_id;
-            $suratJalanProduct->stock_id = $stock->id;
+            $suratJalanProduct->product_id = $request->product_id;
             $suratJalanProduct->qty = $request->qty;
             $suratJalanProduct->keterangan = $request->keterangan;
             $suratJalanProduct->save();
@@ -667,10 +654,9 @@ class AdminController extends Controller
     public function deleteProductSuratJalan($id)
     {
         $suratJalanProduct = SuratJalanProduct::find($id);
-        // Tambahkan stock sesuai dengan qty yang dihapus
-        $stock = Stock::find($suratJalanProduct->stock_id);
-        $stock->stock += $suratJalanProduct->qty;
-        $stock->save();
+        $product = Product::find($suratJalanProduct->product_id);
+        $product->stock += $suratJalanProduct->qty;
+        $product->save();
         $suratJalanProduct->delete();
         return redirect()->back()->with('success', 'Product surat jalan deleted successfully');
     }
@@ -683,11 +669,11 @@ class AdminController extends Controller
         return Excel::download(new ExportSuratJalan($suratJalan, $suratJalanProducts), 'surat-jalan-' . $suratJalan->kode . '.xlsx');
     }
 
-    
+
     // History Report
     public function reportMasuk()
     {
-        $reports = Report::where('jenis', 'masuk')->latest()->get();
+        $reports = Report::latest()->get();
         return view('admin.report-history-masuk', compact('reports'));
     }
 
@@ -704,7 +690,7 @@ class AdminController extends Controller
             'qty' => 'required',
             'keterangan' => 'nullable',
         ]);
-        
+
         $report = SuratJalanProduct::find($request->id);
 
         // Hitung selisih quantity
@@ -712,13 +698,13 @@ class AdminController extends Controller
 
         // Update Stock
         if ($request->qty > $report->qty) {
-            $stock = Stock::find($report->stock_id);
-            $stock->stock += $selisih;
-            $stock->save();
+            $product = Product::find($report->product_id);
+            $product->stock += $selisih;
+            $product->save();
         } else {
-            $stock = Stock::find($report->stock_id);
-            $stock->stock -= $selisih;
-            $stock->save();
+            $product = Product::find($report->product_id);
+            $product->stock -= $selisih;
+            $product->save();
         }
 
 
@@ -739,8 +725,7 @@ class AdminController extends Controller
     public function transferStock()
     {
         $transfers = TransferStock::all();
-        $stocks = Stock::all();
-        return view('admin.transfer-stock', compact('transfers', 'stocks'));
+        return view('admin.transfer-stock', compact('transfers'));
     }
     public function addTransferStock()
     {
@@ -751,47 +736,40 @@ class AdminController extends Controller
     public function storeTransferStock(Request $request)
     {
         $request->validate([
-            'product_id' => 'required',
-            'gudang_tujuan' => 'required',
-            'gudang_awal' => 'required',
+            'product_awal' => 'required',
+            'product_tujuan' => 'required',
             'quantity' => 'required',
             'keterangan' => 'nullable',
             'refrensi' => 'nullable',
             'lokasi_kirim' => 'nullable',
         ]);
 
-        $stockAwal = Stock::where('product_id', $request->product_id)
-            ->where('gudang_id', $request->gudang_awal)
-            ->first();
-        if (!$stockAwal) {
-            return redirect()->back()->with('error', 'Stock product tidak ada');
+        // product awal dan tujuan tidak boleh sama
+        if ($request->product_awal == $request->product_tujuan) {
+            return redirect()->back()->with('error', 'Product awal dan tujuan tidak boleh sama');
         }
-        if ($stockAwal->stock < $request->quantity) {
+
+        $productAwal = Product::find($request->product_awal);
+        $productTujuan = Product::find($request->product_tujuan);
+        // Cek Apakah product awal stock nya ada
+        $stockAwal = $productAwal->stock;
+        if ($stockAwal <= $request->quantity) {
             return redirect()->back()->with('error', 'Stock product tidak cukup');
         }
 
-        $stockTujuan = Stock::where('product_id', $request->product_id)
-            ->where('gudang_id', $request->gudang_tujuan)
-            ->first();
+        // Cek apakah product tujuan stock nya ada
+        $stockTujuan = $productTujuan->stock;
+        $stockTujuan += $request->quantity;
+        $productTujuan->stock = $stockTujuan;
+        $productTujuan->save();
 
-        if (!$stockTujuan) {
-            $stockTujuan = new Stock();
-            $stockTujuan->product_id = $request->product_id;
-            $stockTujuan->gudang_id = $request->gudang_tujuan;
-            $stockTujuan->stock = $request->quantity;
-            $stockTujuan->save();
-        } else {
-            $stockTujuan->stock += $request->quantity;
-            $stockTujuan->save();
-        }
-
-        $stockAwal->stock -= $request->quantity;
-        $stockAwal->save();
+        // Kurangi Stock Product Awal
+        $productAwal->stock -= $request->quantity;
+        $productAwal->save();
 
         $transfer = new TransferStock();
-        $transfer->product_id = $request->product_id;
-        $transfer->gudang_tujuan = $request->gudang_tujuan;
-        $transfer->gudang_awal = $request->gudang_awal;
+        $transfer->product_awal = $productAwal->id;
+        $transfer->product_tujuan = $productTujuan->id;
         $transfer->quantity = $request->quantity;
         $transfer->keterangan = $request->keterangan;
         $transfer->refrensi = $request->refrensi;
@@ -821,8 +799,7 @@ class AdminController extends Controller
     public function stockOpname()
     {
         $stockOpnames = StockOpname::latest()->get();
-        $stocks = Stock::all();
-        return view('admin.stock-opname', compact('stockOpnames', 'stocks'));
+        return view('admin.stock-opname', compact('stockOpnames'));
     }
     public function stockOpnameFilter(Request $request)
     {
@@ -851,43 +828,28 @@ class AdminController extends Controller
     {
         $request->validate([
             'product_id' => 'required',
-            'gudang_id' => 'required',
             'stock_actual' => 'required',
             'keterangan' => 'nullable',
         ]);
 
         // Cek Stock 
-        $stock = Stock::where('product_id', $request->product_id)
-            ->where('gudang_id', $request->gudang_id)
+        $product = Product::where('id', $request->product_id)
             ->first();
-        if (!$stock) {
-            $newStock = new Stock();
-            $newStock->product_id = $request->product_id;
-            $newStock->gudang_id = $request->gudang_id;
-            $newStock->stock = $request->stock_actual;
-            $newStock->save();
-            if ($newStock) {
-                $stockOpname = new StockOpname();
-                $stockOpname->stock_id = $newStock->id;
-                $stockOpname->stock_tercatat = 0;
-                $stockOpname->jumlah_aktual = $request->stock_actual;
-                $stockOpname->keterangan = $request->keterangan;
-                $stockOpname->save();
-                return redirect()->back()->with('success', 'Stock opname added successfully');
-            }
-        } else {
-            // JIka Stock Ada Update stock nya
-            $stockLama = $stock->stock;
-            $stock->stock = $request->stock_actual;
-            $stock->save();
-            $stockOpname = new StockOpname();
-            $stockOpname->stock_id = $stock->id;
-            $stockOpname->stock_tercatat = $stockLama;
-            $stockOpname->jumlah_aktual = $request->stock_actual;
-            $stockOpname->keterangan = $request->keterangan;
-            $stockOpname->save();
-            return redirect()->back()->with('success', 'Stock opname added successfully');
-        }
+
+        // JIka Stock Ada Update stock nya
+        $stockLama = $product->stock;
+        $product->stock = $request->stock_actual;
+        $product->save();
+
+
+        $stockOpname = new StockOpname();
+        $stockOpname->product_id = $product->id;
+        $stockOpname->stock_tercatat = $stockLama;
+        $stockOpname->jumlah_aktual = $request->stock_actual;
+        $stockOpname->keterangan = $request->keterangan;
+        $stockOpname->save();
+        return redirect()->back()->with('success', 'Stock opname added successfully');
+        
     }
 
 
@@ -900,8 +862,7 @@ class AdminController extends Controller
         if ($request->to == null) {
             return redirect()->back()->with('error', 'Tanggal sampai tidak boleh kosong');
         }
-        $reports = Report::where('jenis', 'masuk')
-            ->whereBetween('created_at', [$request->from, $request->to])
+        $reports = Report::whereBetween('created_at', [$request->from, $request->to])
             ->get();
         $from = $request->from;
         $to = $request->to;
