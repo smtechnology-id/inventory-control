@@ -2,30 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Unit;
-use App\Models\User;
-use App\Models\Stock;
-use App\Models\Driver;
-use App\Models\Gudang;
-use App\Models\Report;
-use App\Models\Product;
-use App\Models\Category;
-use App\Models\Konsumen;
-use App\Models\Supplier;
-use App\Models\SuratJalan;
-use App\Models\StockOpname;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use App\Models\TransferStock;
-use App\Exports\ExportSuratJalan;
-use App\Models\SuratJalanProduct;
+use App\Exports\ExportReportBarangKeluar;
+use App\Exports\ExportReportKeluar;
 use App\Exports\ExportReportMasuk;
 use App\Exports\ExportStockOpname;
-use App\Exports\ExportReportKeluar;
+use App\Exports\ExportSuratJalan;
 use App\Exports\ExportTransferStock;
+use App\Exports\ExportTransferStockSingle;
+use App\Models\Category;
+use App\Models\Driver;
+use App\Models\Gudang;
+use App\Models\Konsumen;
+use App\Models\Product;
+use App\Models\Report;
+use App\Models\StockOpname;
+use App\Models\Supplier;
+use App\Models\SuratJalan;
+use App\Models\SuratJalanProduct;
+use App\Models\TransferStock;
+use App\Models\Unit;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\ExportReportBarangKeluar;
 
 class AdminController extends Controller
 {
@@ -35,9 +35,8 @@ class AdminController extends Controller
         $gudang = Gudang::count();
         $product = Product::all();
         $user = User::count();
-
         // Priduct Kritis
-        $productKritis = Product::where('stock', '<=', 'stock_minimal')->get();
+        $productKritis = Product::whereColumn('stock', '<=', 'stock_minimal')->get(); // Corrected comparison
         return view('admin.dashboard', compact('totalBarang', 'gudang', 'productKritis', 'user'));
     }
 
@@ -553,9 +552,9 @@ class AdminController extends Controller
     public function deleteReportMasuk($id)
     {
         $report = Report::find($id);
-        $stock = Stock::find($report->stock_id);
-        $stock->stock -= $report->quantity;
-        $stock->save();
+        $product = Product::find($report->product_id);
+        $product->stock -= $report->quantity;
+        $product->save();
         $report->delete();
         return redirect()->back()->with('success', 'Report deleted successfully');
     }
@@ -744,6 +743,7 @@ class AdminController extends Controller
             'lokasi_kirim' => 'nullable',
         ]);
 
+
         // product awal dan tujuan tidak boleh sama
         if ($request->product_awal == $request->product_tujuan) {
             return redirect()->back()->with('error', 'Product awal dan tujuan tidak boleh sama');
@@ -766,8 +766,14 @@ class AdminController extends Controller
         // Kurangi Stock Product Awal
         $productAwal->stock -= $request->quantity;
         $productAwal->save();
+        // Nomor DO mengambil urutan terakhir contoh 0001
+        $lastTransfer = TransferStock::latest()->first();
+        $lastNumber = $lastTransfer ? intval(substr($lastTransfer->nomor_do, -4)) + 1 : 1;
+        $formattedNumber = str_pad($lastNumber, 4, '0', STR_PAD_LEFT);
+        $nomorDo = $formattedNumber;
 
         $transfer = new TransferStock();
+        $transfer->nomor_do = $nomorDo;
         $transfer->product_awal = $productAwal->id;
         $transfer->product_tujuan = $productTujuan->id;
         $transfer->quantity = $request->quantity;
@@ -910,5 +916,11 @@ class AdminController extends Controller
     public function downloadReportHistoryProductKeluarExcel($from, $to)
     {
         return Excel::download(new ExportReportBarangKeluar($from, $to), 'report-history-product-keluar.xlsx');
+    }
+
+    public function cetakTransferStockSingle($nomor_do)
+    {
+        $transfer = TransferStock::where('nomor_do', $nomor_do)->first();
+        return Excel::download(new ExportTransferStockSingle($transfer), 'transfer-stock.xlsx');
     }
 }

@@ -47,7 +47,6 @@
 </head>
 
 <body>
-
     <div class="top">
         <div>
             <table>
@@ -86,7 +85,5 @@
             </table>
         </div>
     </div>
-
 </body>
-
 </html>

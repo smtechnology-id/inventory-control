@@ -138,14 +138,14 @@
                             <a href="{{ route('admin.gudang') }}"><i
                                     class="material-icons-two-tone">factory</i>Gudang</a>
                         </li>
-                        <li class="@yield('active_driver')">
+                        {{-- <li class="@yield('active_driver')">
                             <a href="{{ route('admin.driver') }}"><i
                                     class="material-icons-two-tone">local_shipping</i>Driver</a>
                         </li>
                         <li class="@yield('active_supplier')">
                             <a href="{{ route('admin.supplier') }}"><i
                                     class="material-icons-two-tone">groups</i>Supplier</a>
-                        </li>
+                        </li> --}}
                         <li class="@yield('active_konsumen')">
                             <a href="{{ route('admin.konsumen') }}"><i
                                     class="material-icons-two-tone">person</i>Konsumen</a>
@@ -222,14 +222,14 @@
                             <a href="{{ route('supervisor.gudang') }}"><i
                                     class="material-icons-two-tone">factory</i>Gudang</a>
                         </li>
-                        <li class="@yield('active_driver')">
+                        {{-- <li class="@yield('active_driver')">
                             <a href="{{ route('supervisor.driver') }}"><i
                                     class="material-icons-two-tone">local_shipping</i>Driver</a>
                         </li>
                         <li class="@yield('active_supplier')">
                             <a href="{{ route('supervisor.supplier') }}"><i
                                     class="material-icons-two-tone">groups</i>Supplier</a>
-                        </li>
+                        </li> --}}
                         <li class="@yield('active_konsumen')">
                             <a href="{{ route('supervisor.konsumen') }}"><i
                                     class="material-icons-two-tone">person</i>Konsumen</a>

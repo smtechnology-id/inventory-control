@@ -40,24 +40,30 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
+                                        <th>Nomor DO</th>
                                         <th>Produk Awal</th>
                                         <th>Produk Tujuan</th>
                                         <th>Refrensi</th>
                                         <th>Lokasi Kirim</th>
                                         <th>Jumlah</th>
                                         <th>Waktu</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($transfers as $transfer)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $transfer->nomor_do }}/TransferoutCMT-ELN/X/2024</td>
                                             <td>{{ $transfer->productAwal->nama_barang }} - {{ $transfer->productAwal->gudang->name }}</td>
                                             <td>{{ $transfer->productTujuan->nama_barang }} - {{ $transfer->productTujuan->gudang->name }}</td>
                                             <td>{{ $transfer->refrensi }}</td>
                                             <td>{{ $transfer->lokasi_kirim }}</td>
                                             <td>{{ $transfer->quantity }} {{ $transfer->productAwal->unit->name }}</td>
                                             <td>{{ $transfer->created_at->format('d-m-Y H:i:s') }}</td>
+                                            <td>
+                                                <a href="{{ route('admin.cetak.transfer.stock.single', $transfer->nomor_do) }}" class="btn btn-primary">Cetak</a>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>

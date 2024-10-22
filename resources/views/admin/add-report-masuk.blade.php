@@ -44,7 +44,7 @@
                                 </div>
                                 <div class="form-group mb-3">
                                     <label for="keterangan" class="mb-2">Keterangan</label>
-                                    <textarea name="keterangan" id="keterangan" class="form-control" rows="3"></textarea>
+                                    <textarea name="keterangan" required id="keterangan" class="form-control" rows="3"></textarea>
                                 </div>
                             </div>
                         </div>

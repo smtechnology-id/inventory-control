@@ -54,7 +54,7 @@
                         <tr>
                             <td>Konsumen</td>
                             <td>:</td>
-                            <td>{{ $suratJalan->konsumen->name }} -  - {{ $suratJalan->konsumen->alamat }}</td>
+                            <td>{{ $suratJalan->konsumen->name }} - {{ $suratJalan->konsumen->nomor_telepon }} - {{ $suratJalan->konsumen->alamat }}</td>
                         </tr>
                     </table>
                 </div>
@@ -125,6 +125,7 @@
                                 <th>Kode Barang</th>
                                 <th>Nomor Material</th>
                                 <th>Product</th>
+                                <th>Gudang</th>
                                 <th>Qty</th>
                                 <th>Keterangan</th>
                                 <th>Action</th>
@@ -137,6 +138,7 @@
                                     <td>{{ $suratJalanProduct->product->kode_barang }}</td>
                                     <td>{{ $suratJalanProduct->product->nomor_material }}</td>
                                     <td>{{ $suratJalanProduct->product->nama_barang }}</td>
+                                    <td>{{ $suratJalanProduct->product->gudang->name }}</td>
                                     <td>{{ $suratJalanProduct->qty }} {{ $suratJalanProduct->product->unit->name }}</td>
                                     <td>{{ $suratJalanProduct->keterangan }}</td>
                                     <td>

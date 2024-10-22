@@ -157,6 +157,9 @@ Route::group(['middleware' => ['authCheck:admin']], function () {
     // Cetak Surat Jalan
     Route::get('/admin/cetak/surat-jalan/{code}', [AdminController::class, 'cetakSuratJalan'])->name('admin.cetak.surat.jalan');
     Route::get('/admin/cetak/surat-jalan/excel/{code}', [AdminController::class, 'cetakSuratJalanExcel'])->name('admin.cetak.surat.jalan.excel');
+
+    // Export Transfer Stock Single
+    Route::get('/admin/cetak/transfer-stock/single/{nomor_do}', [AdminController::class, 'cetakTransferStockSingle'])->name('admin.cetak.transfer.stock.single');
 });
 
 
