@@ -19,16 +19,19 @@ class TransferStockProduct extends Model
         'keterangan',
     ];
 
+    // Definisikan relasi dengan model TransferStock
     public function transferStock()
     {
-        return $this->belongsTo(TransferStock::class, 'transfer_stock_id');
+        return $this->belongsTo(TransferStock::class);
     }
 
+    // Definisikan relasi dengan model Product untuk gudang awal
     public function productGudangAwal()
     {
         return $this->belongsTo(Product::class, 'product_gudang_awal_id');
     }
 
+    // Definisikan relasi dengan model Product untuk gudang tujuan
     public function productGudangTujuan()
     {
         return $this->belongsTo(Product::class, 'product_gudang_tujuan_id');

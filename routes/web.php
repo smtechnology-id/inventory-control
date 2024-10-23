@@ -90,6 +90,9 @@ Route::group(['middleware' => ['authCheck:admin']], function () {
 
     // Account Supervisor
     Route::get('/admin/account/supervisor', [AdminController::class, 'accountSupervisor'])->name('admin.account.supervisor');
+    // Account Admin
+    Route::get('/admin/account/admin', [AdminController::class, 'accountAdmin'])->name('admin.account.admin');
+    // Account Staff
     Route::get('/admin/account/staff', [AdminController::class, 'accountStaff'])->name('admin.account.staff');
     Route::get('/admin/account/edit/{id}', [AdminController::class, 'editAccount'])->name('admin.account.edit');
     Route::post('/admin/account/update', [AdminController::class, 'updateAccount'])->name('admin.account.update');
@@ -122,6 +125,13 @@ Route::group(['middleware' => ['authCheck:admin']], function () {
     Route::post('/admin/transfer-stock/store', [AdminController::class, 'storeTransferStock'])->name('admin.transfer.stock.store');
     Route::post('/admin/transfer-stock/update', [AdminController::class, 'updateTransferStock'])->name('admin.transfer.stock.update');
     Route::get('/admin/transfer-stock/delete/{id}', [AdminController::class, 'deleteTransferStock'])->name('admin.transfer.stock.delete');
+    Route::get('/admin/transfer-stock/add-product/{nomor_do}', [AdminController::class, 'addProductTransferStock'])->name('admin.add-product-transfer-stock');
+    Route::post('/admin/transfer-stock/store-product', [AdminController::class, 'storeTransferStockProduct'])->name('admin.store.transfer.stock.product');
+
+    Route::get('/admin/transfer-stock/delete-product/{id}', [AdminController::class, 'deleteTransferStockProduct'])->name('admin.delete.product.transfer.stock');
+
+    // Cetak Transfer Stock
+    Route::get('/admin/cetak/transfer-stock/pdf/{nomor_do}', [AdminController::class, 'cetakTransferStockPdf'])->name('admin.cetak.transfer.stock.pdf');
 
     // Filter Transfer Stock
     Route::get('/admin/transfer-stock/filter', [AdminController::class, 'transferStockFilter'])->name('admin.transfer.stock.filter');

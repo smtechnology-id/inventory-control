@@ -41,12 +41,16 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Nomor DO</th>
-                                        <th>Produk Awal</th>
-                                        <th>Produk Tujuan</th>
+                                        <th>Gudang Awal</th>
+                                        <th>Gudang Tujuan</th>
                                         <th>Refrensi</th>
                                         <th>Lokasi Kirim</th>
-                                        <th>Jumlah</th>
-                                        <th>Waktu</th>
+                                        <th>Attendant</th>
+                                        <th>Via</th>
+                                        <th>Carrier</th>
+                                        <th>Truck Number</th>
+                                        <th>Delivery By</th>
+                                        
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -55,14 +59,17 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $transfer->nomor_do }}/TransferoutCMT-ELN/X/2024</td>
-                                            <td>{{ $transfer->productAwal->nama_barang }} - {{ $transfer->productAwal->gudang->name }}</td>
-                                            <td>{{ $transfer->productTujuan->nama_barang }} - {{ $transfer->productTujuan->gudang->name }}</td>
+                                            <td>{{ $transfer->gudangAwal->name }}</td>
+                                            <td>{{ $transfer->gudangTujuan->name }}</td>
                                             <td>{{ $transfer->refrensi }}</td>
                                             <td>{{ $transfer->lokasi_kirim }}</td>
-                                            <td>{{ $transfer->quantity }} {{ $transfer->productAwal->unit->name }}</td>
-                                            <td>{{ $transfer->created_at->format('d-m-Y H:i:s') }}</td>
+                                            <td>{{ $transfer->attendant }}</td>
+                                            <td>{{ $transfer->via }}</td>
+                                            <td>{{ $transfer->carrier }}</td>
+                                            <td>{{ $transfer->truck_number }}</td>
+                                            <td>{{ $transfer->delivery_by }}</td>
                                             <td>
-                                                <a href="{{ route('admin.cetak.transfer.stock.single', $transfer->nomor_do) }}" class="btn btn-primary">Cetak</a>
+                                                <a href="{{ route('admin.add-product-transfer-stock', $transfer->nomor_do) }}" class="btn btn-primary">Detail</a>
                                             </td>
                                         </tr>
                                     @endforeach

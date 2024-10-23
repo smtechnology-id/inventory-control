@@ -28,11 +28,11 @@
                                     <th>Kode Barang</th>
                                     <th>Nama Barang</th>
                                     <th>Gudang</th>
-                                    <th>Stock</th>
                                     <th>Satuan</th>
                                     <th>Kategori</th>
-                                    <th>Stock Minimal</th>
                                     <th>Keterangan</th>
+                                    <th>Stock Minimal</th>
+                                    <th>Stock</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -44,11 +44,11 @@
                                         <td>{{ $product->kode_barang }}</td>
                                         <td>{{ $product->nama_barang }}</td>
                                         <td>{{ $product->gudang->name }}</td>
-                                        <td>{{ $product->stock }}</td>
                                         <td>{{ $product->unit->name }}</td>
                                         <td>{{ $product->category->name }}</td>
-                                        <td>{{ $product->stock_minimal }}</td>
                                         <td>{{ $product->keterangan }}</td>
+                                        <td>{{ $product->stock_minimal }}</td>
+                                        <td>{{ $product->stock }} {{ $product->unit->name }}</td>
                                         <td>
                                             <a href="{{ route('admin.product.edit', $product->slug) }}" class="btn btn-warning">Edit</a>
                                             <a href="{{ route('admin.product.delete', $product->slug) }}" class="btn btn-danger">Delete</a>

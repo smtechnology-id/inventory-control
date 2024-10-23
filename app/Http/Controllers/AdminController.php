@@ -2,30 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\ExportReportBarangKeluar;
-use App\Exports\ExportReportKeluar;
-use App\Exports\ExportReportMasuk;
-use App\Exports\ExportStockOpname;
-use App\Exports\ExportSuratJalan;
-use App\Exports\ExportTransferStock;
-use App\Exports\ExportTransferStockSingle;
-use App\Models\Category;
-use App\Models\Driver;
-use App\Models\Gudang;
-use App\Models\Konsumen;
-use App\Models\Product;
-use App\Models\Report;
-use App\Models\StockOpname;
-use App\Models\Supplier;
-use App\Models\SuratJalan;
-use App\Models\SuratJalanProduct;
-use App\Models\TransferStock;
 use App\Models\Unit;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use App\Models\Driver;
+use App\Models\Gudang;
+use App\Models\Report;
+use App\Models\Product;
+use App\Models\Category;
+use App\Models\Konsumen;
+use App\Models\Supplier;
+use App\Models\SuratJalan;
+use App\Models\StockOpname;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Models\TransferStock;
+use App\Exports\ExportSuratJalan;
+use App\Models\SuratJalanProduct;
+use App\Exports\ExportReportMasuk;
+use App\Exports\ExportStockOpname;
+use App\Exports\ExportReportKeluar;
+use App\Exports\ExportTransferStock;
+use App\Models\TransferStockProduct;
+use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ExportReportBarangKeluar;
+use App\Exports\ExportTransferStockSingle;
+
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class AdminController extends Controller
 {
@@ -98,29 +101,31 @@ class AdminController extends Controller
         $categories = Category::all();
         $units = Unit::all();
         $product = Product::where('slug', $slug)->first();
-        return view('admin.edit-product', compact('product', 'categories', 'units'));
+        $gudangs = Gudang::all();
+        return view('admin.edit-product', compact('product', 'categories', 'units', 'gudangs'));
     }
 
     public function updateProduct(Request $request)
     {
         $request->validate([
-            'category' => 'required',
-            'unit' => 'required',
+            'category_id' => 'required',
+            'unit_id' => 'required',
             'nomor_material' => 'required',
             'kode_barang' => 'required',
-            'name' => 'required',
+            'nama_barang' => 'required',
             'stock_minimal' => 'required',
             'keterangan' => 'nullable',
         ]);
 
         $product = Product::where('id', $request->id)->first();
-        $product->category_id = $request->category;
-        $product->unit_id = $request->unit;
+        $product->category_id = $request->category_id;
+        $product->unit_id = $request->unit_id;
         $product->nomor_material = $request->nomor_material;
         $product->kode_barang = $request->kode_barang;
-        $product->nama_barang = $request->name;
+        $product->nama_barang = $request->nama_barang;
         $product->stock_minimal = $request->stock_minimal;
         $product->keterangan = $request->keterangan;
+        $product->gudang_id = $request->gudang_id;
         $product->save();
         return redirect()->route('admin.product')->with('success', 'Product updated successfully');
     }
@@ -431,6 +436,12 @@ class AdminController extends Controller
     }
 
     // Account Supervisor
+    public function accountAdmin()
+    {
+        $accounts = User::where('level', 'admin')->get();
+        return view('admin.account-supervisor', compact('accounts'));
+    }
+    // Account Ad
     public function accountSupervisor()
     {
         $accounts = User::where('level', 'supervisor')->get();
@@ -723,7 +734,7 @@ class AdminController extends Controller
     // Transfer Stock
     public function transferStock()
     {
-        $transfers = TransferStock::all();
+        $transfers = TransferStock::latest()->get();
         return view('admin.transfer-stock', compact('transfers'));
     }
     public function addTransferStock()
@@ -735,38 +746,26 @@ class AdminController extends Controller
     public function storeTransferStock(Request $request)
     {
         $request->validate([
-            'product_awal' => 'required',
-            'product_tujuan' => 'required',
-            'quantity' => 'required',
+            'gudang_awal' => 'required',
+            'gudang_tujuan' => 'required',
+            'attendant' => 'required',
+            'via' => 'required',
+            'carrier' => 'required',
             'keterangan' => 'nullable',
-            'refrensi' => 'nullable',
-            'lokasi_kirim' => 'nullable',
+            'refrensi' => 'required',
+            'lokasi_kirim' => 'required',
+            'truck_number' => 'required',
+            'delivered_by' => 'required',
+
         ]);
 
 
         // product awal dan tujuan tidak boleh sama
-        if ($request->product_awal == $request->product_tujuan) {
-            return redirect()->back()->with('error', 'Product awal dan tujuan tidak boleh sama');
+        if ($request->gudang_awal == $request->gudang_tujuan) {
+            return redirect()->back()->with('error', 'Gudang awal dan tujuan tidak boleh sama');
         }
 
-        $productAwal = Product::find($request->product_awal);
-        $productTujuan = Product::find($request->product_tujuan);
-        // Cek Apakah product awal stock nya ada
-        $stockAwal = $productAwal->stock;
-        if ($stockAwal <= $request->quantity) {
-            return redirect()->back()->with('error', 'Stock product tidak cukup');
-        }
-
-        // Cek apakah product tujuan stock nya ada
-        $stockTujuan = $productTujuan->stock;
-        $stockTujuan += $request->quantity;
-        $productTujuan->stock = $stockTujuan;
-        $productTujuan->save();
-
-        // Kurangi Stock Product Awal
-        $productAwal->stock -= $request->quantity;
-        $productAwal->save();
-        // Nomor DO mengambil urutan terakhir contoh 0001
+        // Ambil nomor do dengan format 0001
         $lastTransfer = TransferStock::latest()->first();
         $lastNumber = $lastTransfer ? intval(substr($lastTransfer->nomor_do, -4)) + 1 : 1;
         $formattedNumber = str_pad($lastNumber, 4, '0', STR_PAD_LEFT);
@@ -774,15 +773,76 @@ class AdminController extends Controller
 
         $transfer = new TransferStock();
         $transfer->nomor_do = $nomorDo;
-        $transfer->product_awal = $productAwal->id;
-        $transfer->product_tujuan = $productTujuan->id;
-        $transfer->quantity = $request->quantity;
+        $transfer->gudang_awal = $request->gudang_awal;
+        $transfer->gudang_tujuan = $request->gudang_tujuan;
+        $transfer->attendant = $request->attendant;
+        $transfer->via = $request->via;
+        $transfer->carrier = $request->carrier;
         $transfer->keterangan = $request->keterangan;
         $transfer->refrensi = $request->refrensi;
         $transfer->lokasi_kirim = $request->lokasi_kirim;
+        $transfer->truck_number = $request->truck_number;
+        $transfer->delivered_by = $request->delivered_by;
         $transfer->save();
 
-        return redirect()->back()->with('success', 'Transfer stock added successfully');
+        return redirect()->route('admin.add-product-transfer-stock', $transfer->nomor_do)->with('success', 'Transfer stock added successfully');
+    }
+
+    public function storeTransferStockProduct(Request $request)
+    {
+        $request->validate([
+            'product_gudang_awal_id' => 'required',
+            'product_gudang_tujuan_id' => 'required',
+            'qty' => 'required',
+            'keterangan' => 'nullable',
+        ]);
+
+        // Cek apakah product gudang awal ada
+        $productGudangAwal = Product::find($request->product_gudang_awal_id);
+        if (!$productGudangAwal) {
+            return redirect()->back()->with('error', 'Product gudang awal tidak ada');
+        }
+
+        // Cek apakah product gudang tujuan ada
+        $productGudangTujuan = Product::find($request->product_gudang_tujuan_id);
+        if (!$productGudangTujuan) {
+            return redirect()->back()->with('error', 'Product gudang tujuan tidak ada');
+        }
+
+        // Cek apakah stock product gudang awal cukup
+        if ($productGudangAwal->stock < $request->qty) {
+            return redirect()->back()->with('error', 'Stock product gudang awal tidak cukup');
+        }
+
+        // Proses transfer stock
+        $productGudangAwal->stock -= $request->qty;
+        $productGudangAwal->save();
+
+        $productGudangTujuan->stock += $request->qty;
+        $productGudangTujuan->save();
+
+
+        $transfer = TransferStock::where('nomor_do', $request->nomor_do)->first();
+
+        $transferProduct = new TransferStockProduct();
+        $transferProduct->transfer_stock_id = $transfer->id;
+        $transferProduct->product_gudang_awal_id = $request->product_gudang_awal_id;
+        $transferProduct->product_gudang_tujuan_id = $request->product_gudang_tujuan_id;
+        $transferProduct->qty = $request->qty;
+        $transferProduct->keterangan = $request->keterangan;
+        $transferProduct->save();
+
+        return redirect()->back()->with('success', 'Product transfer stock added successfully');
+    }
+
+    public function addProductTransferStock($nomor_do)
+    {
+        $transfer = TransferStock::where('nomor_do', $nomor_do)->first();
+        $productGudangAwal = Product::where('gudang_id', $transfer->gudang_awal)->get();
+        $productGudangTujuan = Product::where('gudang_id', $transfer->gudang_tujuan)->get();
+        $transferProducts = TransferStockProduct::where('transfer_stock_id', $transfer->id)->get();
+        $products = Product::all();
+        return view('admin.add-product-transfer-stock', compact('transfer', 'productGudangAwal', 'productGudangTujuan', 'transferProducts', 'products'));
     }
 
     public function transferStockFilter(Request $request)
@@ -798,6 +858,24 @@ class AdminController extends Controller
         $from = $request->from;
         $to = $request->to;
         return view('admin.transfer-stock-filter', compact('transfers', 'from', 'to'));
+    }
+
+    public function deleteTransferStockProduct($id)
+    {
+
+        // Cek apakah product gudang awal ada
+        $transferProduct = TransferStockProduct::find($id);
+        $productGudangAwal = Product::find($transferProduct->product_gudang_awal_id);
+        $productGudangAwal->stock += $transferProduct->qty;
+        $productGudangAwal->save();
+
+        // Cek apakah product gudang tujuan ada
+        $productGudangTujuan = Product::find($transferProduct->product_gudang_tujuan_id);
+        $productGudangTujuan->stock -= $transferProduct->qty;
+        $productGudangTujuan->save();
+
+        $transferProduct->delete();
+        return redirect()->back()->with('success', 'Product transfer stock deleted successfully');
     }
 
 
@@ -922,5 +1000,17 @@ class AdminController extends Controller
     {
         $transfer = TransferStock::where('nomor_do', $nomor_do)->first();
         return Excel::download(new ExportTransferStockSingle($transfer), 'transfer-stock.xlsx');
+    }
+
+
+    // Cetak PDF
+    public function cetakTransferStockPdf($nomor_do)
+    {
+        $transfer = TransferStock::where('nomor_do', $nomor_do)->first();
+
+        // $pdf = PDF::loadView('admin.pdf.transfer-stock', compact('transfer'));
+        // return $pdf->stream($nomor_do.'-StockoutCMT-ELN-X-2024.pdf');
+
+        return view('admin.pdf.transfer-stock', compact('transfer'));
     }
 }
