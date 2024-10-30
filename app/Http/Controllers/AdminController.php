@@ -1006,11 +1006,19 @@ class AdminController extends Controller
     // Cetak PDF
     public function cetakTransferStockPdf($nomor_do)
     {
-        $transfer = TransferStock::where('nomor_do', $nomor_do)->first();
+        $transfer = TransferStock::where('nomor_do', $nomor_do)->first();   
+        $transferProducts = TransferStockProduct::where('transfer_stock_id', $transfer->id)->get();
+        $pdf = PDF::loadView('admin.pdf.transfer-stock', compact('transfer', 'transferProducts'));
+        return $pdf->stream($nomor_do.'-StockoutCMT-ELN-X-2024.pdf');
 
-        // $pdf = PDF::loadView('admin.pdf.transfer-stock', compact('transfer'));
-        // return $pdf->stream($nomor_do.'-StockoutCMT-ELN-X-2024.pdf');
+        // return view('admin.pdf.transfer-stock', compact('transfer'));
+    }
 
-        return view('admin.pdf.transfer-stock', compact('transfer'));
+    public function cetakSuratJalanPdf($code)
+    {
+        $suratJalan = SuratJalan::where('code', $code)->first();
+        $suratJalanProducts = SuratJalanProduct::where('surat_jalan_id', $suratJalan->id)->get();
+        $pdf = PDF::loadView('admin.pdf.surat-jalan', compact('suratJalan', 'suratJalanProducts'));
+        return $pdf->stream($code.'-StockoutCMT-ELN-X-2024.pdf');
     }
 }

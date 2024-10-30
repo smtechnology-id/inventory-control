@@ -19,7 +19,7 @@ return [
      * Dejavu Sans font is missing glyphs for converted entities, turn it off if you need to show € and £.
      */
     'convert_entities' => true,
-
+    'isRemoteEnabled' => true,
     'options' => [
         /**
          * The location of the DOMPDF font directory
