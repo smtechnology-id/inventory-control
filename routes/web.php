@@ -42,6 +42,10 @@ Route::group(['middleware' => ['authCheck:admin']], function () {
     Route::post('/admin/product/update', [AdminController::class, 'updateProduct'])->name('admin.product.update');
     Route::get('/admin/product/delete/{slug}', [AdminController::class, 'deleteProduct'])->name('admin.product.delete');
 
+    // Filter Product
+    Route::get('/admin/product/filter', [AdminController::class, 'productFilter'])->name('admin.product.filter');
+    Route::get('/admin/product/export/{gudang}', [AdminController::class, 'exportProduct'])->name('admin.product.download.filter');
+
 
     // Category
     Route::get('/admin/category', [AdminController::class, 'categories'])->name('admin.category');
@@ -170,6 +174,9 @@ Route::group(['middleware' => ['authCheck:admin']], function () {
 
     // Export Transfer Stock Single
     Route::get('/admin/cetak/transfer-stock/single/{nomor_do}', [AdminController::class, 'cetakTransferStockSingle'])->name('admin.cetak.transfer.stock.single');
+
+    // Cetak PDF
+    Route::get('/admin/cetak/surat-jalan/pdf/{nomor_do}', [AdminController::class, 'cetakSuratJalanPdf'])->name('admin.cetak.surat.jalan.pdf');
 });
 
 

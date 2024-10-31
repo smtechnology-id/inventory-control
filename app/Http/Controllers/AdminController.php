@@ -16,6 +16,8 @@ use App\Models\StockOpname;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\TransferStock;
+use App\Exports\ExportProduct;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Exports\ExportSuratJalan;
 use App\Models\SuratJalanProduct;
 use App\Exports\ExportReportMasuk;
@@ -25,10 +27,9 @@ use App\Exports\ExportTransferStock;
 use App\Models\TransferStockProduct;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
+
 use App\Exports\ExportReportBarangKeluar;
 use App\Exports\ExportTransferStockSingle;
-
-use Barryvdh\DomPDF\Facade\Pdf;
 
 class AdminController extends Controller
 {
@@ -47,7 +48,8 @@ class AdminController extends Controller
     public function products()
     {
         $products = Product::all();
-        return view('admin.product', compact('products'));
+        $gudangs = Gudang::all();   
+        return view('admin.product', compact('products', 'gudangs'));
     }
 
     public function addProduct()
@@ -135,6 +137,20 @@ class AdminController extends Controller
         $product = Product::where('slug', $slug)->first();
         $product->delete();
         return redirect()->route('admin.product')->with('success', 'Product deleted successfully');
+    }
+
+    public function productFilter(Request $request)
+    {
+        $products = Product::where('gudang_id', $request->gudang)->get();
+        $gudangs = Gudang::all();
+        return view('admin.product-filter', compact('products', 'gudangs'));
+    }
+
+    public function exportProduct($gudang)
+    {
+        $gudang_id = $gudang;
+        $gudangName = Gudang::where('id', $gudang)->first();
+        return Excel::download(new ExportProduct($gudang_id), 'product-filter-' . $gudangName->name . '.xlsx');
     }
 
 
@@ -969,6 +985,8 @@ class AdminController extends Controller
         return view('admin.report-history-product-keluar-filter', compact('reports', 'from', 'to'));
     }
 
+    
+
 
     // Download Excel
     public function downloadReportMasukExcel($from, $to)
@@ -1014,11 +1032,11 @@ class AdminController extends Controller
         // return view('admin.pdf.transfer-stock', compact('transfer'));
     }
 
-    public function cetakSuratJalanPdf($code)
+    public function cetakSuratJalanPdf($nomor_do)
     {
-        $suratJalan = SuratJalan::where('code', $code)->first();
+        $suratJalan = SuratJalan::where('nomor_do', $nomor_do)->first();
         $suratJalanProducts = SuratJalanProduct::where('surat_jalan_id', $suratJalan->id)->get();
         $pdf = PDF::loadView('admin.pdf.surat-jalan', compact('suratJalan', 'suratJalanProducts'));
-        return $pdf->stream($code.'-StockoutCMT-ELN-X-2024.pdf');
+        return $pdf->stream($nomor_do.'-StockoutCMT-ELN-X-2024.pdf');
     }
 }

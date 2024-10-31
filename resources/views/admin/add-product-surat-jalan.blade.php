@@ -71,7 +71,9 @@
                     <a href="{{ route('admin.cetak.surat.jalan.excel', $suratJalan->kode) }}" class="btn btn-primary"
                         style="background-color: #28a745; border-color: #28a745;">Cetak
                         Surat Jalan (Excel)</a>
-
+                    <a href="{{ route('admin.cetak.surat.jalan.pdf', $suratJalan->nomor_do) }}" class="btn btn-primary"
+                        style="background-color: #E62C31; border-color: #E62C31;">Cetak
+                        Surat Jalan (PDF)</a>
                     <!-- Modal -->
                     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
                         aria-hidden="true">

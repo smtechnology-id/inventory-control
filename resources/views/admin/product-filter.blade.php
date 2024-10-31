@@ -33,6 +33,7 @@
                             
                             <div class="col-6">
                                 <button type="submit" class="btn btn-outline-primary">Filter</button>
+                                <a href="{{ route('admin.product.download.filter', ['gudang' => $gudang]) }}" class="btn btn-sm btn-success">Cetak Excel</a>
                             </div>
                         </div>
                     </form>

@@ -162,6 +162,9 @@
                                     <a href="{{ route('admin.account.add') }}">Add Account</a>
                                 </li>
                                 <li>
+                                    <a href="{{ route('admin.account.admin') }}">Admin</a>
+                                </li>
+                                <li>
                                     <a href="{{ route('admin.account.supervisor') }}">Supervisor</a>
                                 </li>
                                 <li>
