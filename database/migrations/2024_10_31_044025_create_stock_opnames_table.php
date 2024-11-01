@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('product_id');
             $table->foreign('product_id')->references('id')->on('products');
-            $table->integer('stock_tercatat');
-            $table->integer('jumlah_aktual');
+            $table->decimal('stock_tercatat', 10, 2);
+            $table->decimal('jumlah_aktual', 10, 2);
             $table->text('keterangan')->nullable();
             $table->timestamps();
         });

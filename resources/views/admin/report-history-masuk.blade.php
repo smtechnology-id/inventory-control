@@ -52,6 +52,7 @@
                                         <th>Gudang</th>
                                         <th>Jumlah</th>
                                         <th>Tanggal Masuk</th>
+                                        <th>Keterangan</th>
                                         <th>Detail</th>
                                     </tr>
                                 </thead>
@@ -65,6 +66,7 @@
                                             <td>{{ $report->product->gudang->name }}</td>
                                             <td>{{ $report->quantity }} {{ $report->product->unit->name }}</td>
                                             <td>{{ $report->created_at->format('d-m-Y H:i') }}</td>
+                                            <td>{{ $report->keterangan }}</td>
                                             <td>
                                                 <!-- Button trigger modal -->
                                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal"

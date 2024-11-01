@@ -100,9 +100,8 @@
                                        
                                         <div class="form-group">
                                             <label for="qty">Qty</label>
-                                            <input type="number" name="qty" id="qty" class="form-control">
+                                            <input type="number" name="qty" id="qty" class="form-control" step="0.01">
                                         </div>
-
                                         <div class="form-group">
                                             <label for="keterangan">Keterangan</label>
                                             <textarea name="keterangan" id="keterangan" class="form-control"></textarea>

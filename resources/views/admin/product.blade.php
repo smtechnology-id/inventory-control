@@ -23,16 +23,12 @@
                         @csrf
                         <div class="row">
                             <div class="form-group mb-3">
-                                <select name="gudang" class="form-control">
+                                <select name="gudang" class="form-control" onchange="this.form.submit()">
                                     <option value="">Pilih Gudang</option>
                                     @foreach ($gudangs as $gudang)
                                         <option value="{{ $gudang->id }}">{{ $gudang->name }}</option>
                                     @endforeach
                                 </select>
-                            </div>
-                            
-                            <div class="col-6">
-                                <button type="submit" class="btn btn-outline-primary">Filter</button>
                             </div>
                         </div>
                     </form>

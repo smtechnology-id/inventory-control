@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Unit;
 use App\Models\User;
-use App\Models\Stock;
+
 use App\Models\Driver;
 use App\Models\Gudang;
 use App\Models\Report;
@@ -26,25 +26,11 @@ class SupervisorController extends Controller
     {
         $totalBarang = Product::count();
         $gudang = Gudang::count();
-        $supplier = Supplier::count();
-        $konsumen = Konsumen::count();
-        $driver = Driver::count();
+        $product = Product::all();
         $user = User::count();
-
-        // Stock Kritis
-        $stock = Stock::all();
-        $stockKritis = []; // Inisialisasi array untuk menyimpan stok kritis
-        foreach ($stock as $s) {
-            $product_id = $s->product_id;
-            $product = Product::find($product_id);
-            $stockMinimal = $product->stock_minimal;
-
-            $stockKritisFlag = $s->stock <= $stockMinimal; // Menggunakan nama variabel yang lebih jelas
-            if ($stockKritisFlag) {
-                $stockKritis[] = $s; // Menambahkan stok ke array jika kritis
-            }
-        }
-        return view('supervisor.dashboard', compact('totalBarang', 'gudang', 'supplier', 'konsumen', 'driver', 'user', 'stockKritis'));
+        // Priduct Kritis
+        $productKritis = Product::whereColumn('stock', '<=', 'stock_minimal')->get(); // Corrected comparison
+        return view('supervisor.dashboard', compact('totalBarang', 'gudang', 'productKritis', 'user'));
     }
 
     // Product
@@ -73,8 +59,8 @@ class SupervisorController extends Controller
     {
         $products = Product::all();
         $gudangs = Gudang::all();
-        $stocks = Stock::all();
-        return view('supervisor.stock', compact('products', 'gudangs', 'stocks'));
+
+        return view('supervisor.stock', compact('products', 'gudangs'));
     }
 
 
@@ -148,16 +134,15 @@ class SupervisorController extends Controller
     public function stockOpname()
     {
         $stockOpnames = StockOpname::latest()->get();
-        $stocks = Stock::all();
-        return view('admin.stock-opname', compact('stockOpnames', 'stocks'));
+
+        return view('admin.stock-opname', compact('stockOpnames'));
     }
 
     
     public function transferStock()
     {
         $transfers = TransferStock::all();
-        $stocks = Stock::all();
-        return view('admin.transfer-stock', compact('transfers', 'stocks'));
+        return view('admin.transfer-stock', compact('transfers'));
     }
     public function addProductSuratJalan($code)
     {

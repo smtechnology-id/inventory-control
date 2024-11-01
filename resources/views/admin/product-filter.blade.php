@@ -19,21 +19,21 @@
                 </div>
                 <div class="card-body">
                     <a href="{{ route('admin.product-add') }}" class="btn btn-primary mb-3">Add Product</a>
+                    <a href="{{ route('admin.product.download.filter', ['gudang' => $gudangSelected->id]) }}" class="btn btn-success mb-3"><i class="bi bi-file-earmark-spreadsheet"></i> Cetak Laporan Gudang {{ $gudangSelected->name }}</a>
                     <form action="{{ route('admin.product.filter') }}" method="get">
                         @csrf
                         <div class="row">
                             <div class="form-group mb-3">
-                                <select name="gudang" class="form-control">
+                                <select name="gudang" class="form-control" onchange="this.form.submit()">
                                     <option value="">Pilih Gudang</option>
                                     @foreach ($gudangs as $gudang)
-                                        <option value="{{ $gudang->id }}">{{ $gudang->name }}</option>
+                                        <option value="{{ $gudang->id }}" {{ $gudang->id == $gudangSelected->id ? 'selected' : '' }}>{{ $gudang->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
                             
                             <div class="col-6">
-                                <button type="submit" class="btn btn-outline-primary">Filter</button>
-                                <a href="{{ route('admin.product.download.filter', ['gudang' => $gudang]) }}" class="btn btn-sm btn-success">Cetak Excel</a>
+                               
                             </div>
                         </div>
                     </form>

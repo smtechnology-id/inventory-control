@@ -129,25 +129,12 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="form-group">
-                                            <label for="product_gudang_tujuan_id">Product Gudang Tujuan</label>
-                                            <select name="product_gudang_tujuan_id" id="product_gudang_tujuan_id"
-                                                class="form-control" required>
-                                                <option value="">Pilih Product</option>
-                                                @foreach ($productGudangTujuan as $productTujuan)
-                                                    <option value="{{ $productTujuan->id }}">
-                                                        {{ $productTujuan->nama_barang }} -
-                                                        {{ $productTujuan->gudang->name }} -
-                                                        {{ $productTujuan->stock }}
-                                                        {{ $productTujuan->unit->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <input type="hidden" name="transfer_stock_id" value="{{ $transfer->id }}">
-
+                                        <input type="hidden" name="gudang_awal" value="{{ $transfer->gudangAwal->id }}">
+                                        <input type="hidden" name="gudang_tujuan" value="{{ $transfer->gudangTujuan->id }}">
+                
                                         <div class="form-group">
                                             <label for="qty">Qty</label>
-                                            <input type="number" name="qty" id="qty" class="form-control" required>
+                                            <input type="number" name="qty" id="qty" class="form-control" required step="0.01">
                                         </div>
 
                                         <div class="form-group">

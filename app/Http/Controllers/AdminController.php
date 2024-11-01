@@ -82,6 +82,7 @@ class AdminController extends Controller
             'keterangan' => 'nullable',
             'gudang_id' => 'required',
         ]);
+        $gudang = Gudang::find($request->gudang_id);
 
         $product = new Product();
         $product->category_id = $request->category_id;
@@ -91,7 +92,7 @@ class AdminController extends Controller
         $product->nama_barang = $request->name;
         $product->stock_minimal = $request->stock_minimal;
         $product->keterangan = $request->keterangan;
-        $product->slug = Str::slug($request->name . '-' . $request->kode_barang);
+        $product->slug = Str::slug($request->name . '-' . $gudang->name . '-' . time());
         $product->gudang_id = $request->gudang_id;
         $product->stock = 0;
         $product->save();
@@ -141,9 +142,11 @@ class AdminController extends Controller
 
     public function productFilter(Request $request)
     {
+        
         $products = Product::where('gudang_id', $request->gudang)->get();
         $gudangs = Gudang::all();
-        return view('admin.product-filter', compact('products', 'gudangs'));
+        $gudangSelected = Gudang::where('id', $request->gudang)->first();
+        return view('admin.product-filter', compact('products', 'gudangs', 'gudangSelected'));
     }
 
     public function exportProduct($gudang)
@@ -808,19 +811,26 @@ class AdminController extends Controller
     {
         $request->validate([
             'product_gudang_awal_id' => 'required',
-            'product_gudang_tujuan_id' => 'required',
             'qty' => 'required',
+            'gudang_awal' => 'required',
+            'gudang_tujuan' => 'required',
             'keterangan' => 'nullable',
         ]);
 
+        $kodeBarangGudangAwal = Product::where('id', $request->product_gudang_awal_id)->where('gudang_id', $request->gudang_awal)->first()->kode_barang;
+        $productGudangTujuan = Product::where('kode_barang', $kodeBarangGudangAwal)->where('gudang_id', $request->gudang_tujuan)->first();
         // Cek apakah product gudang awal ada
+
+        if($productGudangTujuan == null){
+            return redirect()->back()->with('error', 'Product tidak ada di gudang tujuan, Silahkan tambahkan product terlebih dahulu di menu product');
+        }
         $productGudangAwal = Product::find($request->product_gudang_awal_id);
         if (!$productGudangAwal) {
             return redirect()->back()->with('error', 'Product gudang awal tidak ada');
         }
 
         // Cek apakah product gudang tujuan ada
-        $productGudangTujuan = Product::find($request->product_gudang_tujuan_id);
+        $productGudangTujuan = Product::find($productGudangTujuan->id);
         if (!$productGudangTujuan) {
             return redirect()->back()->with('error', 'Product gudang tujuan tidak ada');
         }
@@ -843,7 +853,7 @@ class AdminController extends Controller
         $transferProduct = new TransferStockProduct();
         $transferProduct->transfer_stock_id = $transfer->id;
         $transferProduct->product_gudang_awal_id = $request->product_gudang_awal_id;
-        $transferProduct->product_gudang_tujuan_id = $request->product_gudang_tujuan_id;
+        $transferProduct->product_gudang_tujuan_id = $productGudangTujuan->id;
         $transferProduct->qty = $request->qty;
         $transferProduct->keterangan = $request->keterangan;
         $transferProduct->save();

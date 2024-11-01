@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('product_gudang_awal_id')->references('id')->on('products')->onDelete('cascade');
             $table->unsignedBigInteger('product_gudang_tujuan_id');
             $table->foreign('product_gudang_tujuan_id')->references('id')->on('products')->onDelete('cascade');
-            $table->integer('qty');
+            $table->decimal('qty', 10, 2);
             $table->string('keterangan')->nullable();
             $table->timestamps();
         });
