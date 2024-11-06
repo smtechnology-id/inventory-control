@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('nomor_do');
             $table->unsignedBigInteger('konsumen_id')->nullable();
             $table->foreign('konsumen_id')->references('id')->on('konsumens');
+            $table->string('attn')->nullable();
             $table->string('via');
             $table->string('carrier');
             $table->string('reff');

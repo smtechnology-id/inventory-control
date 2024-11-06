@@ -26,6 +26,7 @@ return new class extends Migration
             $table->integer('stock_minimal');
             $table->decimal('stock', 10, 2);
             $table->string('keterangan')->nullable();
+            $table->string('status')->default('active');
             $table->timestamps();
         });
     }

@@ -54,7 +54,8 @@
                         <tr>
                             <td>No DO</td>
                             <td>:</td>
-                            <td>{{ $transfer->nomor_do }}</td>
+                            <td>{{ $transfer->nomor_do }}/StockoutCMT-ELN/X/2024
+                            </td>
                         </tr>
                         <tr>
                             <td>Via</td>

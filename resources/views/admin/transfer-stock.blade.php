@@ -67,7 +67,7 @@
                                             <td>{{ $transfer->via }}</td>
                                             <td>{{ $transfer->carrier }}</td>
                                             <td>{{ $transfer->truck_number }}</td>
-                                            <td>{{ $transfer->delivery_by }}</td>
+                                            <td>{{ $transfer->delivered_by }}</td>
                                             <td>
                                                 <a href="{{ route('admin.add-product-transfer-stock', $transfer->nomor_do) }}" class="btn btn-primary">Detail</a>
                                             </td>

@@ -41,6 +41,10 @@
                                     <label for="carrier" class="mb-2">Carrier</label>
                                     <input type="text" name="carrier" id="carrier" class="form-control" required>
                                 </div>
+                                <div class="form-group mb-3">
+                                    <label for="attn" class="mb-2">Attendant</label>
+                                    <input type="text" name="attn" id="attn" class="form-control">
+                                </div>
                             </div>
                             <div class="col-md-6">
                                

@@ -102,7 +102,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <a href="{{ route('admin.category.delete', $gudang->id) }}"
+                                            <a href="{{ route('admin.gudang.delete', $gudang->slug) }}"
                                                 class="btn btn-danger">Delete</a>
                                         </td>
                                     </tr>

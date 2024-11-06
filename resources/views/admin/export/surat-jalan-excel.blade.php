@@ -165,7 +165,7 @@
                </tr>
                <tr>
                 <td colspan="2">Attn : </td>
-                <td colspan="3"></td>
+                <td colspan="3">{{ $suratJalan->attn }}</td>
                 <td>Delivered By : </td>
                 <td colspan="3">{{ $suratJalan->delivered_by }}</td>
                </tr>

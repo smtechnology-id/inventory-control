@@ -65,6 +65,7 @@
                         <th style="width: 200px; text-align: center; vertical-align: middle; font-weight: 700;">Nama Barang</th>
                         <th style="width: 200px; text-align: center; vertical-align: middle; font-weight: 700;">Gudang</th>
                         <th style="width: 200px; text-align: center; vertical-align: middle; font-weight: 700;">Jumlah</th>
+                        <th style="width: 200px; text-align: center; vertical-align: middle; font-weight: 700;">Satuan</th>
                         <th style="width: 200px; text-align: center; vertical-align: middle; font-weight: 700;">Tanggal Keluar</th>
                     </tr>
                 </thead>
@@ -76,8 +77,9 @@
                         <td style="width: 200px; text-align: center; vertical-align: middle">{{ $report->product->kode_barang }}</td>
                         <td style="width: 200px; text-align: center; vertical-align: middle">{{ $report->product->nama_barang }}</td>
                         <td style="width: 200px; text-align: center; vertical-align: middle">{{ $report->product->gudang->name }}</td>
-                        <td style="width: 200px; text-align: center; vertical-align: middle">{{ round($report->qty) }} {{ $report->product->unit->name }}</td>
-                        <td style="width: 200px; text-align: center; vertical-align: middle">{{ $report->created_at->format('d-m-Y H:i') }}</td>
+                        <td style="width: 200px; text-align: center; vertical-align: middle">{{ $report->qty }} </td>
+                        <td style="width: 200px; text-align: center; vertical-align: middle">{{ $report->product->unit->name }}</td>
+                        <td style="width: 200px; text-align: center; vertical-align: middle">{{ $report->created_at->format('d-m-Y') }}</td>
                     </tr>
                     @endforeach
                 </tbody>

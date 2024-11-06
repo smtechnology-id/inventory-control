@@ -36,19 +36,19 @@ class AdminController extends Controller
     public function index()
     {
         $totalBarang = Product::count();
-        $gudang = Gudang::count();
-        $product = Product::all();
+        $gudang = Gudang::where('status', 'active')->count();
+        $product = Product::where('status', 'active')->count();
         $user = User::count();
         // Priduct Kritis
-        $productKritis = Product::whereColumn('stock', '<=', 'stock_minimal')->get(); // Corrected comparison
+        $productKritis = Product::whereColumn('stock', '<=', 'stock_minimal')->where('status', 'active')->get(); // Corrected comparison
         return view('admin.dashboard', compact('totalBarang', 'gudang', 'productKritis', 'user'));
     }
 
     // Product
     public function products()
     {
-        $products = Product::all();
-        $gudangs = Gudang::all();   
+        $products = Product::where('status', 'active')->get();
+        $gudangs = Gudang::where('status', 'active')->get();   
         return view('admin.product', compact('products', 'gudangs'));
     }
 
@@ -61,12 +61,12 @@ class AdminController extends Controller
         if (Unit::count() == 0) {
             return redirect()->route('admin.unit')->with('error', 'Unit tidak ada, silahkan tambahkan unit terlebih dahulu');
         }
-        if (Gudang::count() == 0) {
+        if (Gudang::where('status', 'active')->count() == 0) {
             return redirect()->route('admin.gudang')->with('error', 'Gudang tidak ada, silahkan tambahkan gudang terlebih dahulu');
         }
         $categories = Category::all();
         $units = Unit::all();
-        $gudangs = Gudang::all();
+        $gudangs = Gudang::where('status', 'active')->get();
         return view('admin.add-product', compact('categories', 'units', 'gudangs'));
     }
 
@@ -136,15 +136,24 @@ class AdminController extends Controller
     public function deleteProduct($slug)
     {
         $product = Product::where('slug', $slug)->first();
-        $product->delete();
+        $product->status = 'inactive';
+        $nomorMaterial = $product->nomor_material . ' (INACTIVE)';
+        $kodeBarang = $product->kode_barang . ' (INACTIVE)';
+        $product->nomor_material = $nomorMaterial;
+        $product->kode_barang = $kodeBarang;
+        $product->nama_barang = $product->nama_barang . ' (INACTIVE)';
+        $product->slug = Str::slug($product->nama_barang . ' (INACTIVE)');
+        $product->save();
         return redirect()->route('admin.product')->with('success', 'Product deleted successfully');
     }
 
     public function productFilter(Request $request)
     {
-        
-        $products = Product::where('gudang_id', $request->gudang)->get();
-        $gudangs = Gudang::all();
+        $request->validate([
+            'gudang' => 'required',
+        ]);
+        $products = Product::where('gudang_id', $request->gudang)->where('status', 'active')->get();
+        $gudangs = Gudang::where('status', 'active')->get();
         $gudangSelected = Gudang::where('id', $request->gudang)->first();
         return view('admin.product-filter', compact('products', 'gudangs', 'gudangSelected'));
     }
@@ -235,7 +244,7 @@ class AdminController extends Controller
     // Gudang
     public function gudang()
     {
-        $gudangs = Gudang::all();
+        $gudangs = Gudang::where('status', 'active')->get();
         return view('admin.gudang', compact('gudangs'));
     }
 
@@ -265,7 +274,26 @@ class AdminController extends Controller
     public function deleteGudang($slug)
     {
         $gudang = Gudang::where('slug', $slug)->first();
-        $gudang->delete();
+        $products = Product::where('gudang_id', $gudang->id)->get();
+        foreach ($products as $product) {
+            if($product->stock != 0){
+                return redirect()->route('admin.gudang')->with('error', 'Gudang tidak bisa dihapus karena Produk sudah memiliki Stock, Silahkan hapus Stock terlebih dahulu dan coba lagi');
+            }
+            else{
+                $nomorMaterial = $product->nomor_material . ' (INACTIVE)';
+                $kodeBarang = $product->kode_barang . ' (INACTIVE)';
+                $product->nomor_material = $nomorMaterial;
+                $product->kode_barang = $kodeBarang;
+                $product->nama_barang = $product->nama_barang . ' (INACTIVE)';
+                $product->slug = Str::slug($product->nama_barang . ' (INACTIVE)');
+                $product->status = 'inactive';
+                $product->save();
+            }
+        }
+        $gudang->status = 'inactive';
+        $gudang->name = $gudang->name . ' (INACTIVE)';
+        $gudang->slug = Str::slug($gudang->name . ' (INACTIVE)');
+        $gudang->save();
         return redirect()->route('admin.gudang')->with('success', 'Gudang deleted successfully');
     }
 
@@ -514,8 +542,8 @@ class AdminController extends Controller
     public function addReportMasuk()
     {
         $konsumens = Konsumen::all();
-        $gudangs = Gudang::all();
-        $products = Product::all();
+        $gudangs = Gudang::where('status', 'active')->get();
+        $products = Product::where('status', 'active')->get();
         return view('admin.add-report-masuk', compact('products', 'konsumens', 'gudangs'));
     }
     public function storeReportMasuk(Request $request)
@@ -605,6 +633,7 @@ class AdminController extends Controller
             'reff' => 'required',
             'truck_number' => 'required',
             'delivered_by' => 'required',
+            'attn' => 'nullable',
         ]);
 
         // No DO mengambil urutan terakhir contoh 0001
@@ -618,6 +647,7 @@ class AdminController extends Controller
         $suratJalan->nomor_do = $nomorDo;
         $suratJalan->via = $request->via;
         $suratJalan->carrier = $request->carrier;
+        $suratJalan->attn = $request->attn;
         $suratJalan->reff = $request->reff;
         $suratJalan->truck_number = $request->truck_number;
         $suratJalan->delivered_by = $request->delivered_by;
@@ -630,8 +660,8 @@ class AdminController extends Controller
     public function addProductSuratJalan($code)
     {
         $suratJalan = SuratJalan::where('kode', $code)->first();
-        $products = Product::all();
-        $gudangs = Gudang::all();
+        $products = Product::where('status', 'active')->get();
+        $gudangs = Gudang::where('status', 'active')->get();
         $productSuratJalans = SuratJalanProduct::where('surat_jalan_id', $suratJalan->id)->get();
         return view('admin.add-product-surat-jalan', compact('suratJalan', 'productSuratJalans', 'products', 'gudangs'));
     }
@@ -758,8 +788,8 @@ class AdminController extends Controller
     }
     public function addTransferStock()
     {
-        $products = Product::all();
-        $gudangs = Gudang::all();
+        $products = Product::where('status', 'active')->get();
+        $gudangs = Gudang::where('status', 'active')->get();
         return view('admin.add-transfer-stock', compact('products', 'gudangs'));
     }
     public function storeTransferStock(Request $request)
@@ -928,8 +958,8 @@ class AdminController extends Controller
 
     public function addStockOpname()
     {
-        $products = Product::all();
-        $gudangs = Gudang::all();
+        $products = Product::where('status', 'active')->get();
+        $gudangs = Gudang::where('status', 'active')->get();
         return view('admin.add-stock-opname', compact('products', 'gudangs'));
     }
 

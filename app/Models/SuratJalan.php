@@ -19,6 +19,7 @@ class SuratJalan extends Model
         'reff',
         'truck_number',
         'delivered_by',
+        'attn',
     ];
 
     public function driver()

@@ -88,7 +88,7 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $suratJalanProduct->qty }}</td>
-                        <td>{{ $suratJalanProduct->product->unit->nama_barang }}</td>
+                        <td>{{ $suratJalanProduct->product->unit->name }}</td>
                         <td>{{ $suratJalanProduct->product->kode_barang }}</td>
                         <td>{{ $suratJalanProduct->product->nama_barang }}</td>
                         <td>{{ $suratJalanProduct->product->gudang->name }}</td>
