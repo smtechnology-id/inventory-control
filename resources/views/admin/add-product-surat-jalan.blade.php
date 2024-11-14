@@ -71,9 +71,9 @@
     <div class="col">
         <div class="card">
             <div class="card-body">
-                <a href="{{ route('admin.cetak.surat.jalan.excel', $suratJalan->kode) }}" class="btn btn-primary" style="background-color: #28a745; border-color: #28a745;">Cetak
+                <a target="_blank" href="{{ route('admin.cetak.surat.jalan.excel', $suratJalan->kode) }}" class="btn btn-primary" style="background-color: #28a745; border-color: #28a745;">Cetak
                     Surat Jalan (Excel)</a>
-                <a href="{{ route('admin.cetak.surat.jalan.pdf', $suratJalan->nomor_do) }}" class="btn btn-primary" style="background-color: #E62C31; border-color: #E62C31;">Cetak
+                <a target="_blank" href="{{ route('admin.cetak.surat.jalan.pdf', $suratJalan->nomor_do) }}" class="btn btn-primary" style="background-color: #E62C31; border-color: #E62C31;">Cetak
                     Surat Jalan (PDF)</a>
                 <!-- Modal -->
 
@@ -86,7 +86,7 @@
                         <form action="{{ route('admin.store.product.surat.jalan') }}" method="post">
                             @csrf
                             <div class="row">
-                                <div class="col">
+                                <div class="col-6">
                                     <div class="form-group">
                                         <label for="product_id">Product</label>
                                         <select name="product_id" id="product_id" class="form-control select2" required>
@@ -99,7 +99,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col">
+                                <div class="col-3">
                                     <input type="hidden" name="surat_jalan_id" value="{{ $suratJalan->id }}">
             
                                     <div class="form-group">
@@ -107,13 +107,13 @@
                                         <input type="number" name="qty" id="qty" class="form-control" step="0.01" required>
                                     </div>
                                 </div>
-                                <div class="col">
+                                <div class="col-3">
                                     <div class="form-group">
                                         <label for="keterangan">Keterangan</label>
                                         <textarea name="keterangan" id="keterangan" class="form-control" rows="1"></textarea>
                                     </div>
                                 </div>
-                                <div class="col d-flex flex-column">
+                                <div class="col-3 d-flex flex-column">
                                     <label for="submit">&nbsp;</label>
                                     <button type="submit" class="btn btn-primary">Submit</button>
                                 </div>

@@ -33,6 +33,11 @@
                             <td>:</td>
                             <td>{{ $suratJalan->created_at->format('d-m-Y') }}</td>
                         </tr>
+                        <tr>
+                            <td>Attendant</td>
+                            <td>:</td>
+                            <td>{{ $suratJalan->attn }}</td>
+                        </tr>
                     </table>
                 </td>
                 <td style="width: 50%;">

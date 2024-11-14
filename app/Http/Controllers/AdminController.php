@@ -40,7 +40,7 @@ class AdminController extends Controller
         $product = Product::where('status', 'active')->count();
         $user = User::count();
         // Priduct Kritis
-        $productKritis = Product::whereColumn('stock', '<=', 'stock_minimal')->where('status', 'active')->get(); // Corrected comparison
+        $productKritis = Product::whereColumn('stock', '<=', 'stock_minimal')->where('status', 'active')->where('stock', '!=', null)->get(); // Corrected comparison
         return view('admin.dashboard', compact('totalBarang', 'gudang', 'productKritis', 'user'));
     }
 
@@ -48,7 +48,7 @@ class AdminController extends Controller
     public function products()
     {
         $products = Product::where('status', 'active')->get();
-        $gudangs = Gudang::where('status', 'active')->get();   
+        $gudangs = Gudang::where('status', 'active')->get();
         return view('admin.product', compact('products', 'gudangs'));
     }
 
@@ -94,7 +94,7 @@ class AdminController extends Controller
         $product->keterangan = $request->keterangan;
         $product->slug = Str::slug($request->name . '-' . $gudang->name . '-' . time());
         $product->gudang_id = $request->gudang_id;
-        $product->stock = 0;
+        $product->stock = null;
         $product->save();
         return redirect()->route('admin.product')->with('success', 'Product added successfully');
     }
@@ -135,7 +135,11 @@ class AdminController extends Controller
 
     public function deleteProduct($slug)
     {
+
         $product = Product::where('slug', $slug)->first();
+        if ($product->stock != 0 or $product->stock != null) {
+            return redirect()->route('admin.product')->with('error', 'Product tidak bisa dihapus karena Produk sudah memiliki Stock, Silahkan hapus Stock terlebih dahulu dan coba lagi');
+        }
         $product->status = 'inactive';
         $nomorMaterial = $product->nomor_material . ' (INACTIVE)';
         $kodeBarang = $product->kode_barang . ' (INACTIVE)';
@@ -276,10 +280,9 @@ class AdminController extends Controller
         $gudang = Gudang::where('slug', $slug)->first();
         $products = Product::where('gudang_id', $gudang->id)->get();
         foreach ($products as $product) {
-            if($product->stock != 0){
+            if ($product->stock != 0 or $product->stock != null) {
                 return redirect()->route('admin.gudang')->with('error', 'Gudang tidak bisa dihapus karena Produk sudah memiliki Stock, Silahkan hapus Stock terlebih dahulu dan coba lagi');
-            }
-            else{
+            } else {
                 $nomorMaterial = $product->nomor_material . ' (INACTIVE)';
                 $kodeBarang = $product->kode_barang . ' (INACTIVE)';
                 $product->nomor_material = $nomorMaterial;
@@ -851,7 +854,7 @@ class AdminController extends Controller
         $productGudangTujuan = Product::where('kode_barang', $kodeBarangGudangAwal)->where('gudang_id', $request->gudang_tujuan)->first();
         // Cek apakah product gudang awal ada
 
-        if($productGudangTujuan == null){
+        if ($productGudangTujuan == null) {
             return redirect()->back()->with('error', 'Product tidak ada di gudang tujuan, Silahkan tambahkan product terlebih dahulu di menu product');
         }
         $productGudangAwal = Product::find($request->product_gudang_awal_id);
@@ -989,7 +992,6 @@ class AdminController extends Controller
         $stockOpname->keterangan = $request->keterangan;
         $stockOpname->save();
         return redirect()->back()->with('success', 'Stock opname added successfully');
-        
     }
 
 
@@ -1025,7 +1027,7 @@ class AdminController extends Controller
         return view('admin.report-history-product-keluar-filter', compact('reports', 'from', 'to'));
     }
 
-    
+
 
 
     // Download Excel
@@ -1064,10 +1066,10 @@ class AdminController extends Controller
     // Cetak PDF
     public function cetakTransferStockPdf($nomor_do)
     {
-        $transfer = TransferStock::where('nomor_do', $nomor_do)->first();   
+        $transfer = TransferStock::where('nomor_do', $nomor_do)->first();
         $transferProducts = TransferStockProduct::where('transfer_stock_id', $transfer->id)->get();
         $pdf = PDF::loadView('admin.pdf.transfer-stock', compact('transfer', 'transferProducts'));
-        return $pdf->stream($nomor_do.'-StockoutCMT-ELN-X-2024.pdf');
+        return $pdf->stream($nomor_do . '-StockoutCMT-ELN-X-2024.pdf');
 
         // return view('admin.pdf.transfer-stock', compact('transfer'));
     }
@@ -1077,6 +1079,6 @@ class AdminController extends Controller
         $suratJalan = SuratJalan::where('nomor_do', $nomor_do)->first();
         $suratJalanProducts = SuratJalanProduct::where('surat_jalan_id', $suratJalan->id)->get();
         $pdf = PDF::loadView('admin.pdf.surat-jalan', compact('suratJalan', 'suratJalanProducts'));
-        return $pdf->stream($nomor_do.'-StockoutCMT-ELN-X-2024.pdf');
+        return $pdf->stream($nomor_do . '-StockoutCMT-ELN-X-2024.pdf');
     }
 }

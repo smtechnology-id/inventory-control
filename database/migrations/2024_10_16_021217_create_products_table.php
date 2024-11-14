@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('nama_barang');
             $table->string('slug')->unique();
             $table->integer('stock_minimal');
-            $table->decimal('stock', 10, 2);
+            $table->decimal('stock', 10, 2)->nullable();
             $table->string('keterangan')->nullable();
             $table->string('status')->default('active');
             $table->timestamps();
