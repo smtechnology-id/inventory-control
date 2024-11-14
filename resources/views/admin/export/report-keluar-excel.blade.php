@@ -65,6 +65,7 @@
                         <th style="width: 200px; text-align: center; vertical-align: middle; font-weight: 700;">Nama Barang</th>
                         <th style="width: 200px; text-align: center; vertical-align: middle; font-weight: 700;">Gudang</th>
                         <th style="width: 200px; text-align: center; vertical-align: middle; font-weight: 700;">Jumlah</th>
+                        <th style="width: 200px; text-align: center; vertical-align: middle; font-weight: 700;">Satuan</th>
                         <th style="width: 200px; text-align: center; vertical-align: middle; font-weight: 700;">Nama Supplier</th>
                         <th style="width: 200px; text-align: center; vertical-align: middle; font-weight: 700;">Tanggal Masuk</th>
                         <th style="width: 200px; text-align: center; vertical-align: middle; font-weight: 700;">Keterangan</th>
@@ -78,8 +79,9 @@
                         <td style="width: 200px; text-align: center; vertical-align: middle">{{ $report->stock->product->nama_barang }}</td>
                         <td style="width: 200px; text-align: center; vertical-align: middle">{{ $report->stock->gudang->name }}</td>
                         <td style="width: 200px; text-align: center; vertical-align: middle">{{ $report->quantity }}</td>
+                        <td style="width: 200px; text-align: center; vertical-align: middle">{{ $report->stock->product->unit->name }}</td>
                         <td style="width: 200px; text-align: center; vertical-align: middle">{{ $report->supplier->name }}</td>
-                        <td style="width: 200px; text-align: center; vertical-align: middle">{{ $report->created_at->format('d-m-Y H:i') }}</td>
+                        <td style="width: 200px; text-align: center; vertical-align: middle">{{ $report->created_at->format('d-m-Y') }}</td>
                         <td style="width: 200px; text-align: center; vertical-align: middle">{{ $report->keterangan }}</td>
                     </tr>
                     @endforeach

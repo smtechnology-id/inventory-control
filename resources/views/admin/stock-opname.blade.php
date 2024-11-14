@@ -55,11 +55,11 @@
                                     @foreach ($stockOpnames as $stockOpname)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $stockOpname->stock->product->nama_barang }}</td>
-                                            <td>{{ $stockOpname->stock->product->nomor_material }}</td>
-                                            <td>{{ $stockOpname->stock->product->kode_barang }}</td>
-                                            <td>{{ $stockOpname->stock->product->nama_barang }}</td>
-                                            <td>{{ $stockOpname->stock->gudang->name }}</td>
+                                            <td>{{ $stockOpname->product->nama_barang }}</td>
+                                            <td>{{ $stockOpname->product->nomor_material }}</td>
+                                            <td>{{ $stockOpname->product->kode_barang }}</td>
+                                            <td>{{ $stockOpname->product->nama_barang }}</td>
+                                            <td>{{ $stockOpname->product->gudang->name }}</td>
                                             <td>{{ $stockOpname->stock_tercatat }}</td>
                                             <td>{{ $stockOpname->jumlah_aktual }}</td>
                                             <td>{{ $stockOpname->stock_tercatat - $stockOpname->jumlah_aktual }}</td>

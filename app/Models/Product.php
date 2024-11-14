@@ -20,6 +20,7 @@ class Product extends Model
         'stock_minimal',
         'keterangan',
         'harga',
+        'stock',
     ];
 
     public function category()
@@ -30,5 +31,22 @@ class Product extends Model
     public function unit()
     {
         return $this->belongsTo(Unit::class);
+    }
+
+    public function gudang()
+    {
+        return $this->belongsTo(Gudang::class);
+    }
+
+    // Definisikan relasi dengan model TransferStockProduct untuk gudang awal
+    public function transferStockProductsGudangAwal()
+    {
+        return $this->hasMany(TransferStockProduct::class, 'product_gudang_awal_id');
+    }
+
+    // Definisikan relasi dengan model TransferStockProduct untuk gudang tujuan
+    public function transferStockProductsGudangTujuan()
+    {
+        return $this->hasMany(TransferStockProduct::class, 'product_gudang_tujuan_id');
     }
 }

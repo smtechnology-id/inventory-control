@@ -27,35 +27,13 @@
                                     <select name="product_id" id="product_id" class="form-control select2" required>
                                         <option value="">Pilih Product</option>
                                         @foreach ($products as $product)
-                                            <option value="{{ $product->id }}" {{ $report->stock->product_id == $product->id ? 'selected' : '' }}>{{ $product->nama_barang }} -
+                                            <option value="{{ $product->id }}" {{ $report->product_id == $product->id ? 'selected' : '' }}>{{ $product->nama_barang }} -
                                                 {{ $product->kode_barang }}
                                             </option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <input type="hidden" name="id" value="{{ $report->id }}">
-                                <div class="form-group mb-3">
-                                    <label for="gudang_id" class="mb-2">Gudang <span class="text-danger">*</span></label>
-                                    <select name="gudang_id" id="gudang_id" class="form-control select2" required>
-                                        <option value="">Pilih Gudang</option>
-                                        @foreach ($gudangs as $gudang)
-                                            <option value="{{ $gudang->id }}" {{ $report->stock->gudang_id == $gudang->id ? 'selected' : '' }}>{{ $gudang->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                               
-                                <div class="form-group mb-3">
-                                    <label for="supplier_id" class="mb-2">Supplier <span
-                                            class="text-danger">*</span></label>
-                                    <select name="supplier_id" id="supplier_id" class="form-control select2" required>
-                                        <option value="">Pilih Supplier</option>
-                                        @foreach ($suppliers as $supplier)
-                                            <option value="{{ $supplier->id }}" {{ $report->stock->supplier_id == $supplier->id ? 'selected' : '' }}>{{ $supplier->name }} -
-                                                {{ $supplier->nomor_telepon }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
@@ -64,7 +42,7 @@
                                 </div>
                                 <div class="form-group mb-3">
                                     <label for="quantity" class="mb-2">Quantity <span class="text-danger">*</span></label>
-                                    <input type="number" name="quantity" id="quantity" class="form-control" value="{{ $report->quantity }}" required>
+                                    <input type="number" name="quantity" id="quantity" class="form-control" value="{{ $report->quantity }}" step="0.01" required>
                                 </div>
                                 <div class="form-group mb-3">
                                     <label for="keterangan" class="mb-2">Keterangan</label>

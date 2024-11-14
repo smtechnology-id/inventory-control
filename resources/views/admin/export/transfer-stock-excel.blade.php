@@ -61,12 +61,12 @@
                     </tr>   
                     <tr>
                         <th style="width: 200px; text-align: center; vertical-align: middle; font-weight: 700;">No</th>
-                        <th style="width: 200px; text-align: center; vertical-align: middle; font-weight: 700;">Kode Barang</th>
-                        <th style="width: 200px; text-align: center; vertical-align: middle; font-weight: 700;">Nama Barang</th>
-                        <th style="width: 200px; text-align: center; vertical-align: middle; font-weight: 700;">Gudang Awal</th>
-                        <th style="width: 200px; text-align: center; vertical-align: middle; font-weight: 700;">Gudang Tujuan</th>
+                        <th style="width: 200px; text-align: center; vertical-align: middle; font-weight: 700;">Produk Awal</th>
+                        <th style="width: 200px; text-align: center; vertical-align: middle; font-weight: 700;">Produk Tujuan</th>
+                        <th style="width: 200px; text-align: center; vertical-align: middle; font-weight: 700;">Refrensi</th>
+                        <th style="width: 200px; text-align: center; vertical-align: middle; font-weight: 700;">Lokasi Kirim</th>
                         <th style="width: 200px; text-align: center; vertical-align: middle; font-weight: 700;">Jumlah</th>
-                        <th style="width: 200px; text-align: center; vertical-align: middle; font-weight: 700;">Tanggal</th>
+                        <th style="width: 200px; text-align: center; vertical-align: middle; font-weight: 700;">Waktu</th>
                         <th style="width: 200px; text-align: center; vertical-align: middle; font-weight: 700;">Keterangan</th>
                     </tr>
                 </thead>
@@ -74,10 +74,11 @@
                     @foreach ($transfers as $transfer)
                     <tr>
                         <td style="width: 200px; text-align: center; vertical-align: middle">{{ $loop->iteration }}</td>
-                        <td style="width: 200px; text-align: center; vertical-align: middle">{{ $transfer->product->kode_barang }}</td>
-                        <td style="width: 200px; text-align: center; vertical-align: middle">{{ $transfer->product->nama_barang }}</td>
-                        <td style="width: 200px; text-align: center; vertical-align: middle">{{ $transfer->gudangAwal->name }}</td>
-                        <td style="width: 200px; text-align: center; vertical-align: middle">{{ $transfer->gudangTujuan->name }}</td>
+                        
+                        <td style="width: 200px; text-align: center; vertical-align: middle">{{ $transfer->productAwal->nama_barang }} - {{ $transfer->productAwal->gudang->name }}</td>
+                        <td style="width: 200px; text-align: center; vertical-align: middle">{{ $transfer->productTujuan->nama_barang }} - {{ $transfer->productTujuan->gudang->name }}</td>
+                        <td style="width: 200px; text-align: center; vertical-align: middle">{{ $transfer->refrensi }}</td>
+                        <td style="width: 200px; text-align: center; vertical-align: middle">{{ $transfer->lokasi_kirim }}</td>
                         <td style="width: 200px; text-align: center; vertical-align: middle">{{ $transfer->quantity }}</td>
                         <td style="width: 200px; text-align: center; vertical-align: middle">{{ $transfer->created_at->format('d-m-Y H:i') }}</td>
                         <td style="width: 200px; text-align: center; vertical-align: middle">{{ $transfer->keterangan }}</td>

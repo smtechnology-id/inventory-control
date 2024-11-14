@@ -94,21 +94,21 @@
                             <td style="width: 200px; text-align: center; vertical-align: middle">{{ $loop->iteration }}
                             </td>
                             <td style="width: 200px; text-align: center; vertical-align: middle">
-                                {{ $stockOpname->stock->product->nama_barang }}</td>
+                                {{ $stockOpname->product->nama_barang }}</td>
                             <td style="width: 200px; text-align: center; vertical-align: middle">
-                                {{ $stockOpname->stock->product->nomor_material }}</td>
+                                {{ $stockOpname->product->nomor_material }}</td>
                             <td style="width: 200px; text-align: center; vertical-align: middle">
-                                {{ $stockOpname->stock->product->kode_barang }}</td>
+                                {{ $stockOpname->product->kode_barang }}</td>
                             <td style="width: 200px; text-align: center; vertical-align: middle">
-                                {{ $stockOpname->stock->product->nama_barang }}</td>
+                                {{ $stockOpname->product->nama_barang }}</td>
                             <td style="width: 200px; text-align: center; vertical-align: middle">
-                                {{ $stockOpname->stock->gudang->name }}</td>
+                                {{ $stockOpname->product->gudang->name }}</td>
                             <td style="width: 200px; text-align: center; vertical-align: middle">
                                 {{ $stockOpname->stock_tercatat }}</td>
                             <td style="width: 200px; text-align: center; vertical-align: middle">
                                 {{ $stockOpname->jumlah_aktual }}</td>
                             <td style="width: 200px; text-align: center; vertical-align: middle">
-                                {{ $stockOpname->stock_tercatat - $stockOpname->jumlah_aktual }}</td>
+                                {{ $stockOpname->jumlah_aktual - $stockOpname->stock_tercatat }}</td>
                             <td style="width: 200px; text-align: center; vertical-align: middle">
                                 {{ $stockOpname->keterangan }}</td>
                         </tr>

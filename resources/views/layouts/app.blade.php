@@ -34,6 +34,7 @@
 
     <!-- Select2 -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
 
 
 </head>
@@ -138,14 +139,14 @@
                             <a href="{{ route('admin.gudang') }}"><i
                                     class="material-icons-two-tone">factory</i>Gudang</a>
                         </li>
-                        <li class="@yield('active_driver')">
+                        {{-- <li class="@yield('active_driver')">
                             <a href="{{ route('admin.driver') }}"><i
                                     class="material-icons-two-tone">local_shipping</i>Driver</a>
                         </li>
                         <li class="@yield('active_supplier')">
                             <a href="{{ route('admin.supplier') }}"><i
                                     class="material-icons-two-tone">groups</i>Supplier</a>
-                        </li>
+                        </li> --}}
                         <li class="@yield('active_konsumen')">
                             <a href="{{ route('admin.konsumen') }}"><i
                                     class="material-icons-two-tone">person</i>Konsumen</a>
@@ -160,6 +161,9 @@
                             <ul class="sub-menu">
                                 <li>
                                     <a href="{{ route('admin.account.add') }}">Add Account</a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.account.admin') }}">Admin</a>
                                 </li>
                                 <li>
                                     <a href="{{ route('admin.account.supervisor') }}">Supervisor</a>
@@ -222,14 +226,14 @@
                             <a href="{{ route('supervisor.gudang') }}"><i
                                     class="material-icons-two-tone">factory</i>Gudang</a>
                         </li>
-                        <li class="@yield('active_driver')">
+                        {{-- <li class="@yield('active_driver')">
                             <a href="{{ route('supervisor.driver') }}"><i
                                     class="material-icons-two-tone">local_shipping</i>Driver</a>
                         </li>
                         <li class="@yield('active_supplier')">
                             <a href="{{ route('supervisor.supplier') }}"><i
                                     class="material-icons-two-tone">groups</i>Supplier</a>
-                        </li>
+                        </li> --}}
                         <li class="@yield('active_konsumen')">
                             <a href="{{ route('supervisor.konsumen') }}"><i
                                     class="material-icons-two-tone">person</i>Konsumen</a>
@@ -330,6 +334,7 @@
 
 
 
+
     <!-- Javascripts -->
     <script src="{{ asset('assets/plugins/jquery/jquery-3.5.1.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -347,3 +352,4 @@
 </body>
 
 </html>
+

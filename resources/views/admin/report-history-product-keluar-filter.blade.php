@@ -36,31 +36,37 @@
                                 </div>
                                 <div class="col-6">
                                     <button type="button" class="btn btn-primary" onclick="openFilter()">Filter</button>
+                                    <a href="{{ route('admin.report.history.keluar.download.excel', ['from' => request('from'), 'to' => request('to')]) }}" class="btn btn-success">Export</a>
                                 </div>
                             </div>
                         </form>
                     </div>
                     <div class="table-responsive">
-                        <a href="{{ route('admin.report.history.keluar.download.excel', ['from' => request('from'), 'to' => request('to')]) }}" class="btn btn-success">Export</a>
                         <table class="table table-bordered" id="datatable1" class="display" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>No</th>
+                                    <th>Kode Barang</th>
                                     <th>Nama Barang</th>
+                                    <th>Nomor Material</th>
                                     <th>Gudang</th>
                                     <th>Jumlah</th>
                                     <th>Tanggal Keluar</th>
+                                    
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($reports as $report)
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $report->stock->product->nama_barang }}</td>
-                                    <td>{{ $report->stock->gudang->name }}</td>
-                                    <td>{{ $report->qty }}</td>
-                                    <td>{{ $report->created_at->format('d-m-Y H:i') }}</td>
-                                </tr>
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $report->product->kode_barang }}</td>
+                                        <td>{{ $report->product->nomor_material }}</td>
+                                        <td>{{ $report->product->nama_barang }}</td>
+                                        <td>{{ $report->product->gudang->name }}</td>
+                                        <td>{{ round($report->qty) }} {{ $report->product->unit->name }}</td>
+                                        <td>{{ $report->created_at->format('d-m-Y H:i') }}</td>
+                                      
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>

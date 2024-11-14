@@ -39,8 +39,16 @@
                                     <input type="text" class="form-control" id="name" name="name" required>
                                 </div>
                                 <div class="form-group mb-3">
-                                    <label for="category" class="mb-2">Category <span class="text-danger">*</span></label>
-                                    <select class="form-control" id="category" name="category" required>
+                                    <label for="gudang_id" class="mb-2">Gudang <span class="text-danger">*</span></label>
+                                    <select class="form-control select2" id="gudang_id" name="gudang_id" required>
+                                        @foreach ($gudangs as $gudang)
+                                            <option value="{{ $gudang->id }}">{{ $gudang->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="category_id" class="mb-2">Category <span class="text-danger">*</span></label>
+                                    <select class="form-control select2" id="category_id" name="category_id" required>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->id }}">{{ $category->name }}</option>
                                         @endforeach
@@ -48,8 +56,8 @@
                                 </div>
 
                                 <div class="form-group mb-3">
-                                    <label for="unit" class="mb-2">Satuan <span class="text-danger">*</span></label>
-                                    <select class="form-control" id="unit" name="unit" required>
+                                    <label for="unit_id" class="mb-2">Satuan <span class="text-danger">*</span></label>
+                                    <select class="form-control select2" id="unit_id" name="unit_id" required>
                                         @foreach ($units as $unit)
                                             <option value="{{ $unit->id }}">{{ $unit->name }}</option>
                                         @endforeach
@@ -60,7 +68,7 @@
                                 <div class="form-group mb-3">
                                     <label for="stock_minimal" class="mb-2">Stock Minimal <span class="text-danger">*</span></label>
                                     <input type="number" class="form-control" id="stock_minimal" name="stock_minimal"
-                                        required>
+                                        step="0.01" required>
                                 </div>
                                 <div class="form-group mb-3">
                                     <label for="keterangan" class="mb-2">Keterangan</label>
@@ -76,4 +84,28 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('script')
+    <script>
+        $(document).ready(function() {
+            $('#gudang_id').select2({
+                placeholder: 'Pilih Gudang'
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#category_id').select2({
+                placeholder: 'Pilih Category'
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#unit_id').select2({
+                placeholder: 'Pilih Satuan'
+            });
+        });
+    </script>
 @endsection

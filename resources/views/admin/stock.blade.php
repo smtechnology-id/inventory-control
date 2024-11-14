@@ -27,12 +27,12 @@
                                     <th>Nomor Material</th>
                                     <th>Kode Barang</th>
                                     <th>Nama Barang</th>
-                                    <th>Satuan</th>
                                     <th>Kategori</th>
-                                    <th>Stock Awal</th>
+                                    <th>Gudang</th>
                                     <th>Stock Minimal</th>
+                                    <th>Stock</th>
                                     <th>Keterangan</th>
-                                    <th>Action</th>
+                                    <th>Created At</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -42,19 +42,12 @@
                                         <td>{{ $product->nomor_material }}</td>
                                         <td>{{ $product->kode_barang }}</td>
                                         <td>{{ $product->nama_barang }}</td>
-                                        <td>{{ $product->unit->name }}</td>
                                         <td>{{ $product->category->name }}</td>
-                                        <td>{{ $product->stock_awal }}</td>
+                                        <td>{{ $product->gudang->name }}</td>
                                         <td>{{ $product->stock_minimal }}</td>
-                                        <td>{{ $product->keterangan }}</td>
-                                        <td>
-                                            @foreach ($gudangs as $gudang)
-                                                @php
-                                                    $stockItem = $stocks->where('product_id', $product->id)->where('gudang_id', $gudang->id)->first();
-                                                @endphp 
-                                                {{ $gudang->name }} - {{ $stockItem ? $stockItem->stock : 0 }}<br> <!-- Menambahkan <br> untuk pemisah antar gudang -->
-                                            @endforeach
-                                        </td>
+                                        <td>{{ $product->stock }} {{ $product->unit->name }}</td>
+                                        <td>{{ $product->keterangan }}</td>    
+                                        <td>{{ $product->created_at->format('d-m-Y H:i:s') }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

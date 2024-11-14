@@ -29,13 +29,13 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Nomor PO</th>
-                                    <th>Nama Barang</th>
                                     <th>Kode Barang</th>
+                                    <th>Nama Barang</th>
                                     <th>Gudang</th>
                                     <th>Jumlah</th>
-                                    <th>Nama Supplier</th>
                                     <th>Tanggal Masuk</th>
                                     <th>Detail</th>
+                                    <th>Keterangan</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -43,12 +43,12 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $report->nomor_po }}</td>
-                                        <td>{{ $report->stock->product->nama_barang }} - ({{ $report->stock->product->unit->name }})</td>
-                                        <td>{{ $report->stock->product->kode_barang }}</td>
-                                        <td>{{ $report->stock->gudang->name }}</td>
-                                        <td>{{ $report->quantity }}</td>
-                                        <td>{{ $report->supplier->name }}</td>
+                                        <td>{{ $report->product->kode_barang }}</td>
+                                        <td>{{ $report->product->nama_barang }} </td>
+                                        <td>{{ $report->product->gudang->name }}</td>
+                                        <td>{{ $report->quantity }} {{ $report->product->unit->name }}</td>
                                         <td>{{ $report->created_at->format('d-m-Y H:i') }}</td>
+                                        <td>{{ $report->keterangan }}</td>
                                         <td>
                                             <!-- Button trigger modal -->
                                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
@@ -108,21 +108,18 @@
                                                                     </tr>
                                                                     <tr>
                                                                         <th>Nama Barang</th>
-                                                                        <td>{{ $report->stock->product->nama_barang }}
+                                                                        <td>{{ $report->product->nama_barang }}
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
                                                                         <th>Gudang</th>
-                                                                        <td>{{ $report->stock->gudang->name }}</td>
+                                                                        <td>{{ $report->product->gudang->name }}</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <th>Jumlah</th>
-                                                                        <td>{{ $report->quantity }}</td>
+                                                                        <td>{{ $report->quantity }} {{ $report->product->unit->name }}</td>
                                                                     </tr>
-                                                                    <tr>
-                                                                        <th>Nama Supplier</th>
-                                                                        <td>{{ $report->supplier->name }}</td>
-                                                                    </tr>
+                                                                    
                                                                     <tr>
                                                                         <th>Tanggal Masuk</th>
                                                                         <td>{{ $report->created_at->format('d-m-Y H:i') }}

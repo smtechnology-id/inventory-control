@@ -33,6 +33,7 @@
                                     <select class="form-control" id="level" name="level" required>
                                         <option value="supervisor">Supervisor</option>
                                         <option value="staff">Staff</option>
+                                        <option value="admin">Admin</option>
                                     </select>
                                 </div>
                                 <div class="form-group mb-3">

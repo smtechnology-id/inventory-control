@@ -19,8 +19,8 @@ class SuratJalanProduct extends Model
     {
         return $this->belongsTo(SuratJalan::class, 'surat_jalan_id', 'id');
     }
-    public function stock()
+    public function product()
     {
-        return $this->belongsTo(Stock::class, 'stock_id', 'id');
+        return $this->belongsTo(Product::class, 'product_id', 'id');
     }
 }

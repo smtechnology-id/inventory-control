@@ -19,6 +19,19 @@
                 </div>
                 <div class="card-body">
                     <a href="{{ route('admin.product-add') }}" class="btn btn-primary mb-3">Add Product</a>
+                    <form action="{{ route('admin.product.filter') }}" method="get">
+                        @csrf
+                        <div class="row">
+                            <div class="form-group mb-3">
+                                <select name="gudang" class="form-control" onchange="this.form.submit()">
+                                    <option value="">Pilih Gudang</option>
+                                    @foreach ($gudangs as $gudang)
+                                        <option value="{{ $gudang->id }}">{{ $gudang->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </form>
                     <div class="table-responsive">
                         <table class="table table-bordered" id="datatable1" class="display" style="width:100%">
                             <thead>
@@ -27,10 +40,12 @@
                                     <th>Nomor Material</th>
                                     <th>Kode Barang</th>
                                     <th>Nama Barang</th>
+                                    <th>Gudang</th>
                                     <th>Satuan</th>
                                     <th>Kategori</th>
-                                    <th>Stock Minimal</th>
                                     <th>Keterangan</th>
+                                    <th>Stock Minimal</th>
+                                    <th>Stock</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -41,13 +56,17 @@
                                         <td>{{ $product->nomor_material }}</td>
                                         <td>{{ $product->kode_barang }}</td>
                                         <td>{{ $product->nama_barang }}</td>
+                                        <td>{{ $product->gudang->name }}</td>
                                         <td>{{ $product->unit->name }}</td>
                                         <td>{{ $product->category->name }}</td>
-                                        <td>{{ $product->stock_minimal }}</td>
                                         <td>{{ $product->keterangan }}</td>
+                                        <td>{{ $product->stock_minimal }}</td>
+                                        <td>{{ $product->stock }} {{ $product->unit->name }}</td>
                                         <td>
-                                            <a href="{{ route('admin.product.edit', $product->slug) }}" class="btn btn-warning">Edit</a>
-                                            <a href="{{ route('admin.product.delete', $product->slug) }}" class="btn btn-danger">Delete</a>
+                                            <a href="{{ route('admin.product.edit', $product->slug) }}"
+                                                class="btn btn-warning">Edit</a>
+                                            <a href="{{ route('admin.product.delete', $product->slug) }}"
+                                                class="btn btn-danger">Delete</a>
                                         </td>
                                     </tr>
                                 @endforeach

@@ -42,6 +42,10 @@ Route::group(['middleware' => ['authCheck:admin']], function () {
     Route::post('/admin/product/update', [AdminController::class, 'updateProduct'])->name('admin.product.update');
     Route::get('/admin/product/delete/{slug}', [AdminController::class, 'deleteProduct'])->name('admin.product.delete');
 
+    // Filter Product
+    Route::get('/admin/product/filter', [AdminController::class, 'productFilter'])->name('admin.product.filter');
+    Route::get('/admin/product/export/{gudang}', [AdminController::class, 'exportProduct'])->name('admin.product.download.filter');
+
 
     // Category
     Route::get('/admin/category', [AdminController::class, 'categories'])->name('admin.category');
@@ -90,6 +94,9 @@ Route::group(['middleware' => ['authCheck:admin']], function () {
 
     // Account Supervisor
     Route::get('/admin/account/supervisor', [AdminController::class, 'accountSupervisor'])->name('admin.account.supervisor');
+    // Account Admin
+    Route::get('/admin/account/admin', [AdminController::class, 'accountAdmin'])->name('admin.account.admin');
+    // Account Staff
     Route::get('/admin/account/staff', [AdminController::class, 'accountStaff'])->name('admin.account.staff');
     Route::get('/admin/account/edit/{id}', [AdminController::class, 'editAccount'])->name('admin.account.edit');
     Route::post('/admin/account/update', [AdminController::class, 'updateAccount'])->name('admin.account.update');
@@ -122,6 +129,13 @@ Route::group(['middleware' => ['authCheck:admin']], function () {
     Route::post('/admin/transfer-stock/store', [AdminController::class, 'storeTransferStock'])->name('admin.transfer.stock.store');
     Route::post('/admin/transfer-stock/update', [AdminController::class, 'updateTransferStock'])->name('admin.transfer.stock.update');
     Route::get('/admin/transfer-stock/delete/{id}', [AdminController::class, 'deleteTransferStock'])->name('admin.transfer.stock.delete');
+    Route::get('/admin/transfer-stock/add-product/{nomor_do}', [AdminController::class, 'addProductTransferStock'])->name('admin.add-product-transfer-stock');
+    Route::post('/admin/transfer-stock/store-product', [AdminController::class, 'storeTransferStockProduct'])->name('admin.store.transfer.stock.product');
+
+    Route::get('/admin/transfer-stock/delete-product/{id}', [AdminController::class, 'deleteTransferStockProduct'])->name('admin.delete.product.transfer.stock');
+
+    // Cetak Transfer Stock
+    Route::get('/admin/cetak/transfer-stock/pdf/{nomor_do}', [AdminController::class, 'cetakTransferStockPdf'])->name('admin.cetak.transfer.stock.pdf');
 
     // Filter Transfer Stock
     Route::get('/admin/transfer-stock/filter', [AdminController::class, 'transferStockFilter'])->name('admin.transfer.stock.filter');
@@ -157,6 +171,12 @@ Route::group(['middleware' => ['authCheck:admin']], function () {
     // Cetak Surat Jalan
     Route::get('/admin/cetak/surat-jalan/{code}', [AdminController::class, 'cetakSuratJalan'])->name('admin.cetak.surat.jalan');
     Route::get('/admin/cetak/surat-jalan/excel/{code}', [AdminController::class, 'cetakSuratJalanExcel'])->name('admin.cetak.surat.jalan.excel');
+
+    // Export Transfer Stock Single
+    Route::get('/admin/cetak/transfer-stock/single/{nomor_do}', [AdminController::class, 'cetakTransferStockSingle'])->name('admin.cetak.transfer.stock.single');
+
+    // Cetak PDF
+    Route::get('/admin/cetak/surat-jalan/pdf/{nomor_do}', [AdminController::class, 'cetakSuratJalanPdf'])->name('admin.cetak.surat.jalan.pdf');
 });
 
 

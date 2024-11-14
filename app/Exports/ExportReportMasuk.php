@@ -29,8 +29,7 @@ class ExportReportMasuk implements FromView
 
     public function getViewData()
     {
-        return Report::where('jenis', 'masuk')
-            ->whereBetween('created_at', [$this->from, $this->to])
+        return Report::whereBetween('created_at', [$this->from, $this->to])
             ->get();
     }
 }
